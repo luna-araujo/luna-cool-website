@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("projects");
+---
+<BaseLayout title="Projects — Luna Araújo" description="Portfolio projects">
+  <h1 class="text-3xl font-bold">Projects</h1>
+  <div class="mt-6 grid gap-4">
+    {projects.map((project) => (
+      <article class="card">
+        <h2 class="text-xl font-semibold">
+          <a class="link" href={`/projects/${project.slug}`}>{project.data.title}</a>
+        </h2>
+        <p class="text-sm text-[var(--muted)]">{project.data.summary}</p>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

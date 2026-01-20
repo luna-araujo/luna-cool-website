@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f6f6f6;
+  --text: #1a1a1a;
+  --muted: #5f6368;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --accent: #6d28d9;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1115;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --card: #141824;
+  --border: #222635;
+  --accent: #a78bfa;
+}
+
+html {
+  color-scheme: light dark;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-[var(--bg)] text-[var(--text)];
+  font-family: theme("fontFamily.sans");
+}
+
+.container {
+  @apply mx-auto w-full max-w-3xl px-6;
+}
+
+.card {
+  @apply rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm;
+}
+
+.link {
+  @apply text-[var(--accent)] hover:underline;
+}

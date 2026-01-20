@@ -1,0 +1,49 @@
+---
+const { title = "Luna Araújo", description = "Personal website" } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body>
+    <script>
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = stored ?? (prefersDark ? "dark" : "light");
+      document.documentElement.dataset.theme = theme;
+    </script>
+    <header class="container py-10">
+      <div class="flex items-center justify-between">
+        <a class="text-xl font-semibold" href="/">Luna Araújo</a>
+        <button
+          class="rounded-full border border-[var(--border)] px-3 py-1 text-sm"
+          id="theme-toggle"
+        >
+          Toggle Theme
+        </button>
+      </div>
+      <nav class="mt-4 flex gap-4 text-sm text-[var(--muted)]">
+        <a href="/#about" class="hover:text-[var(--text)]">About</a>
+        <a href="/#portfolio" class="hover:text-[var(--text)]">Portfolio</a>
+        <a href="/blog" class="hover:text-[var(--text)]">Blog</a>
+      </nav>
+    </header>
+    <main class="container pb-16">
+      <slot />
+    </main>
+    <script>
+      const button = document.getElementById("theme-toggle");
+      button?.addEventListener("click", () => {
+        const current = document.documentElement.dataset.theme;
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem("theme", next);
+      });
+    </script>
+  </body>
+</html>

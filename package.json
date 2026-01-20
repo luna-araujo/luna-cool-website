@@ -1,0 +1,22 @@
+{
+  "name": "luna-cool-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.16.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.12",
+    "postcss": "^8.4.47",
+    "autoprefixer": "^10.4.20"
+  }
+}
