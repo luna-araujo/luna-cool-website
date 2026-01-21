@@ -3,21 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --bg: #f6f6f6;
-  --text: #1a1a1a;
-  --muted: #5f6368;
-  --card: #ffffff;
-  --border: #e5e7eb;
-  --accent: #6d28d9;
+  /* Catppuccin Latte */
+  --bg: #eff1f5;
+  --text: #4c4f69;
+  --muted: #6c6f85;
+  --card: #e6e9ef;
+  --border: #ccd0da;
+  --accent: #8839ef;
 }
 
 :root[data-theme="dark"] {
-  --bg: #0f1115;
-  --text: #f3f4f6;
-  --muted: #9ca3af;
-  --card: #141824;
-  --border: #222635;
-  --accent: #a78bfa;
+  /* Catppuccin Mocha */
+  --bg: #1e1e2e;
+  --text: #cdd6f4;
+  --muted: #a6adc8;
+  --card: #313244;
+  --border: #45475a;
+  --accent: #cba6f7;
 }
 
 html {
@@ -30,8 +32,19 @@ body {
   font-family: theme("fontFamily.sans");
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #1e1e2e;
+    --text: #cdd6f4;
+    --muted: #a6adc8;
+    --card: #313244;
+    --border: #45475a;
+    --accent: #cba6f7;
+  }
+}
+
 .container {
-  @apply mx-auto w-full max-w-3xl px-6;
+  @apply mx-auto w-full max-w-5xl px-4 md:px-8;
 }
 
 .card {

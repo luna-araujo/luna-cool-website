@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import "../styles/project-card.css";
 
 const projects = await getCollection("projects");
 ---
@@ -19,11 +20,14 @@ const projects = await getCollection("projects");
       <h2 class="text-2xl font-semibold">Portfolio</h2>
       <a class="link text-sm" href="/projects">View all</a>
     </div>
-    <div class="flex gap-4 overflow-x-auto pb-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {projects.map((project) => (
-        <a class="card min-w-[260px]" href={`/projects/${project.slug}`}> 
-          <h3 class="text-lg font-semibold">{project.data.title}</h3>
-          <p class="text-sm text-[var(--muted)]">{project.data.summary}</p>
+        <a href={`/projects/${project.slug}`} class="project-card">
+          {project.data.image && (
+            <img src={project.data.image} alt={project.data.title} />
+          )}
+          <h3>{project.data.title}</h3>
+          <p>{project.data.summary}</p>
         </a>
       ))}
     </div>
