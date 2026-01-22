@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
+const basePath = import.meta.env.BASE_URL;
 const posts = await getCollection("blog");
 const sorted = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
@@ -11,7 +12,7 @@ const sorted = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf(
     {sorted.map((post) => (
       <article class="card">
         <h2 class="text-xl font-semibold">
-          <a class="link" href={`/blog/${post.slug}`}>{post.data.title}</a>
+          <a class="link" href={basePath + `blog/${post.slug}`}>{post.data.title}</a>
         </h2>
         <p class="text-sm text-[var(--muted)]">{post.data.description}</p>
         <p class="text-xs text-[var(--muted)]">{post.data.date.toDateString()}</p>
