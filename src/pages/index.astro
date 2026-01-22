@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import "../styles/project-card.css";
 
+const basePath = import.meta.env.BASE_URL;
 const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year) - parseInt(a.data.year));
 ---
 <BaseLayout title="Luna Araújo — Home" description="Personal website">
@@ -18,12 +19,12 @@ const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.dat
   <section id="portfolio" class="mt-12 space-y-4">
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-semibold">Portfolio</h2>
-      <a class="link text-sm" href="/projects">View all</a>
+      <a class="link text-sm" href={basePath + 'projects'}>View all</a>
     </div>
     <div class="relative">
       <div id="projects-carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
         {projects.map((project) => (
-          <a href={`/projects/${project.slug}`} class="project-card flex-none w-64 snap-center">
+          <a href={basePath + `projects/${project.slug}`} class="project-card flex-none w-64 snap-center">
             {project.data.image && (
               <img src={project.data.image} alt={project.data.title} />
             )}
@@ -58,7 +59,7 @@ const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.dat
     <p class="text-[var(--muted)]">
       Check out the blog for updates, reflections, and technical notes.
     </p>
-    <a class="link" href="/blog">Go to blog</a>
+    <a class="link" href={basePath + 'blog'}>Go to blog</a>
   </section>
 </BaseLayout>
 
