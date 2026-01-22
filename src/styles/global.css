@@ -64,3 +64,15 @@ body {
 .link {
   @apply text-[var(--accent)] hover:underline;
 }
+
+.footer {
+  @apply fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[#313244] backdrop-blur-sm;
+}
+
+.footer-links {
+  @apply flex flex-wrap gap-2 justify-center items-center text-xs;
+}
+
+.footer-link {
+  @apply hover:text-[var(--text)] text-[var(--muted)] transition-colors;
+}
