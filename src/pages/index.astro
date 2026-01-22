@@ -22,7 +22,7 @@ const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.dat
       <a class="link text-sm" href={basePath + 'projects'}>View all</a>
     </div>
     <div class="relative">
-      <div id="projects-carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
+      <div id="projects-carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4">
         {projects.map((project) => (
           <a href={basePath + `projects/${project.slug}`} class="project-card flex-none w-64 snap-center">
             {project.data.image && (
