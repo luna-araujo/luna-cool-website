@@ -1,13 +1,25 @@
 ---
 title: "Zen Tiger Bingo"
-summary: "This is a project I worked on at Caleta."
+summary: "Video Bingo"
 role: "Designer / Developer"
-year: "2025"
+year: "2026"
 image: "/images/projects/zentigerbingo.png"
+link: "https://staging.the-rgs.com/open_fun_game/344"
 ---
 
-Zen Tiger Bingo is a project I contributed to during my time at Caleta. It involved designing and developing key aspects of the game. Below are some highlights of the project:
+Zen Tiger Bingo is a video bingo game developed by Caleta Gaming, featuring very high volatility gameplay with a maximum win potential of 10,000x. It incorporates exciting features such as Extra Balls, Special Ball, and Hold and Win mechanics, tagged with #TIGER and #ASIAN themes. I contributed to the design and development of this project at Caleta.
 
-- **Goals**: To create an engaging and visually appealing bingo game.
-- **Challenges**: Overcoming design constraints while ensuring a seamless user experience.
-- **Outcomes**: Successfully delivered a polished product that met client expectations and received positive feedback.
+## Game Details
+
+- **Release Date**: January 27, 2026
+- **Type**: Video Bingo
+- **RTP**: 96.60%
+- **Volatility**: Very High
+- **Max Win**: 10,000x
+- **Tags**: #TIGER, #ASIAN
+
+## Features
+
+- EXTRA BALLS
+- SPECIAL BALL
+- HOLD AND WIN
