@@ -60,6 +60,64 @@ const basePath = import.meta.env.BASE_URL;
     <main class="container pb-16">
       <slot />
     </main>
+    <footer class="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--bg)] backdrop-blur-sm">
+      <div class="container py-0 pb-1">
+        <div class="flex gap-2 justify-center items-center text-xs">
+          <div class="flex flex-wrap gap-2 justify-center items-center">
+            <a
+              href="mailto:luna_r_araujo@proton.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Email"
+              class="hover:text-[var(--text)] text-[var(--muted)] transition-colors"
+            >
+              Email
+            </a>
+            <span class="text-[var(--border)]">•</span>
+            <a
+              href="https://github.com/luna-araujo"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              class="hover:text-[var(--text)] text-[var(--muted)] transition-colors"
+            >
+              GitHub
+            </a>
+            <span class="text-[var(--border)]">•</span>
+            <a
+              href="https://luna-xyz.itch.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="itch.io"
+              class="hover:text-[var(--text)] text-[var(--muted)] transition-colors"
+            >
+              itch.io
+            </a>
+            <span class="text-[var(--border)]">•</span>
+            <a
+              href="https://www.linkedin.com/in/luribeiroaraujo/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              class="hover:text-[var(--text)] text-[var(--muted)] transition-colors"
+            >
+              LinkedIn
+            </a>
+            <span class="text-[var(--border)]">•</span>
+            <a
+              href="https://soundcloud.com/luna_softproducts"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SoundCloud"
+              class="hover:text-[var(--text)] text-[var(--muted)] transition-colors"
+            >
+              SoundCloud
+            </a>
+          </div>
+        </div>
+      </div>
+      <span class="text-[var(--muted)] opacity-50 absolute bottom-0.5 right-0 text-xs">© 2026 Luna Araújo</span>
+    </footer>
     <script>
       const button = document.getElementById("theme-toggle");
       const sunIcon = document.getElementById("sun-icon");
