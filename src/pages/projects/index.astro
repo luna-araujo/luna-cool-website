@@ -12,7 +12,7 @@ const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.dat
     {projects.map((project) => (
       <a href={basePath + `projects/${project.slug}`} class="project-card">
         {project.data.image && (
-          <img src={project.data.image} alt={project.data.title} />
+          <img src={basePath + project.data.image.slice(1)} alt={project.data.title} />
         )}
         <h3>{project.data.title}</h3>
         <p>{project.data.summary}</p>
