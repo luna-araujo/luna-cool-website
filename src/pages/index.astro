@@ -3,15 +3,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import "../styles/project-card.css";
 
-const projects = await getCollection("projects");
+const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year) - parseInt(a.data.year));
 ---
 <BaseLayout title="Luna Araújo — Home" description="Personal website">
   <section id="about" class="space-y-4">
     <h1 class="text-3xl font-bold">Hi, I'm Luna.</h1>
     <p class="text-[var(--muted)]">
-      This is a minimal, single-column personal website with markdown-driven
-      content. Use this section to tell your career journey and highlight your
-      skills.
+      I'm a designer and developer specializing in game development and interactive experiences. Currently at 
+      Caleta Gaming, I create visually appealing and mechanically engaging games—from indie platformers to complex 
+      video bingo systems. I work with Unity, pixel art, and game design to bring ideas to life.
     </p>
   </section>
 
@@ -20,16 +20,36 @@ const projects = await getCollection("projects");
       <h2 class="text-2xl font-semibold">Portfolio</h2>
       <a class="link text-sm" href="/projects">View all</a>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {projects.map((project) => (
-        <a href={`/projects/${project.slug}`} class="project-card">
-          {project.data.image && (
-            <img src={project.data.image} alt={project.data.title} />
-          )}
-          <h3>{project.data.title}</h3>
-          <p>{project.data.summary}</p>
-        </a>
-      ))}
+    <div class="relative">
+      <div id="projects-carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
+        {projects.map((project) => (
+          <a href={`/projects/${project.slug}`} class="project-card flex-none w-64 snap-center">
+            {project.data.image && (
+              <img src={project.data.image} alt={project.data.title} />
+            )}
+            <h3>{project.data.title}</h3>
+            <p>{project.data.summary}</p>
+          </a>
+        ))}
+      </div>
+      <button
+        id="projects-prev-btn"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg"
+        aria-label="Previous project"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button
+        id="projects-next-btn"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg"
+        aria-label="Next project"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
     </div>
   </section>
 
@@ -41,3 +61,19 @@ const projects = await getCollection("projects");
     <a class="link" href="/blog">Go to blog</a>
   </section>
 </BaseLayout>
+
+<script>
+  const projectsCarousel = document.getElementById('projects-carousel');
+  const projectsPrevBtn = document.getElementById('projects-prev-btn');
+  const projectsNextBtn = document.getElementById('projects-next-btn');
+
+  if (projectsCarousel && projectsPrevBtn && projectsNextBtn) {
+    projectsPrevBtn.addEventListener('click', () => {
+      projectsCarousel.scrollBy({ left: -300, behavior: 'smooth' });
+    });
+
+    projectsNextBtn.addEventListener('click', () => {
+      projectsCarousel.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+  }
+</script>

@@ -51,6 +51,16 @@ body {
   @apply rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm;
 }
 
+.card i,
+.card .icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  font-size: 24px;
+}
+
 .link {
   @apply text-[var(--accent)] hover:underline;
 }

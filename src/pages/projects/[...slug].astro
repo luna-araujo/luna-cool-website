@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import fs from "node:fs";
+import path from "node:path";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -9,6 +11,29 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await project.render();
+
+// Check if gallery folder exists
+const galleryPath = path.join(process.cwd(), "public", "images", "projects", project.slug, "gallery");
+const hasGallery = fs.existsSync(galleryPath);
+
+// Get actual gallery images that exist
+let galleryImages: string[] = [];
+if (hasGallery) {
+  try {
+    const files = fs.readdirSync(galleryPath);
+    const imageFiles = files.filter(file => /\.(png|jpg|jpeg|gif|webp)$/i.test(file));
+    galleryImages = imageFiles
+      .sort((a, b) => {
+        const numA = parseInt(a.match(/\d+/)?.[0] || '0');
+        const numB = parseInt(b.match(/\d+/)?.[0] || '0');
+        return numA - numB;
+      })
+      .map(file => `/images/projects/${project.slug}/gallery/${file}`);
+  } catch (e) {
+    // If we can't read the directory, set to empty array
+    galleryImages = [];
+  }
+}
 ---
 <BaseLayout title={`${project.data.title} — Luna Araújo`} description={project.data.summary}>
   <article class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
@@ -31,4 +56,180 @@ const { Content } = await project.render();
       )}
     </div>
   </article>
+
+  {hasGallery && (
+  <!-- Gallery Section -->
+  <section id="gallery-section" class="mt-12">
+    <h2 class="text-2xl font-semibold mb-6">Gallery</h2>
+    <div class="relative">
+      <div id="carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
+        {galleryImages.map((imageSrc, index) => (
+          <img
+            src={imageSrc}
+            alt={`${project.data.title} screenshot ${index + 1}`}
+            class="flex-none w-full md:w-[280px] rounded-lg shadow-md snap-center cursor-pointer hover:opacity-90 transition-opacity"
+            loading="lazy"
+            data-index={index}
+          />
+        ))}
+      </div>
+      <button
+        id="prev-btn"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg hidden"
+        aria-label="Previous image"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button
+        id="next-btn"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg hidden"
+        aria-label="Next image"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </section>
+  )}
+
+  {hasGallery && (
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
+    <button
+      id="close-lightbox"
+      class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+      aria-label="Close"
+    >
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <button
+      id="lightbox-prev"
+      class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+      aria-label="Previous image"
+    >
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] object-contain" />
+    <button
+      id="lightbox-next"
+      class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+      aria-label="Next image"
+    >
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+  )}
+
+  {hasGallery && (
+  <script define:vars={{ galleryImages }}>
+    const carousel = document.getElementById('carousel');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeLightbox = document.getElementById('close-lightbox');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    
+    let currentImageIndex = 0;
+    
+    // Check if carousel needs scrolling and update button visibility
+    function updateCarouselButtonVisibility() {
+      if (carousel && prevBtn && nextBtn) {
+        const isScrollable = carousel.scrollWidth > carousel.clientWidth;
+        if (isScrollable) {
+          prevBtn.classList.remove('hidden');
+          nextBtn.classList.remove('hidden');
+        } else {
+          prevBtn.classList.add('hidden');
+          nextBtn.classList.add('hidden');
+        }
+      }
+    }
+    
+    // Carousel navigation
+    if (carousel && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: -300, behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: 300, behavior: 'smooth' });
+      });
+      
+      // Check visibility on load and on resize
+      updateCarouselButtonVisibility();
+      window.addEventListener('resize', updateCarouselButtonVisibility);
+    }
+
+    // Open lightbox
+    const images = carousel?.querySelectorAll('img') || [];
+    images.forEach((img, index) => {
+      img.addEventListener('click', () => {
+        currentImageIndex = index;
+        showLightbox(galleryImages[currentImageIndex]);
+      });
+    });
+
+    function updateLightboxButtons() {
+      if (galleryImages.length <= 1) {
+        lightboxPrev?.classList.add('hidden');
+        lightboxNext?.classList.add('hidden');
+      } else {
+        lightboxPrev?.classList.remove('hidden');
+        lightboxNext?.classList.remove('hidden');
+      }
+    }
+
+    function showLightbox(imageSrc) {
+      lightboxImg.src = imageSrc;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      updateLightboxButtons();
+    }
+
+    function hideLightbox() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    // Close lightbox
+    closeLightbox?.addEventListener('click', hideLightbox);
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox) hideLightbox();
+    });
+
+    // Lightbox navigation
+    lightboxPrev?.addEventListener('click', () => {
+      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+      lightboxImg.src = galleryImages[currentImageIndex];
+    });
+
+    lightboxNext?.addEventListener('click', () => {
+      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+      lightboxImg.src = galleryImages[currentImageIndex];
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('hidden')) {
+        if (e.key === 'Escape') hideLightbox();
+        if (e.key === 'ArrowLeft') lightboxPrev?.click();
+        if (e.key === 'ArrowRight') lightboxNext?.click();
+      }
+    });
+  </script>
+  )}
 </BaseLayout>

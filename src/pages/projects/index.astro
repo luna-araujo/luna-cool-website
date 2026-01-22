@@ -3,11 +3,11 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import "../../styles/project-card.css";
 
-const projects = await getCollection("projects");
+const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year) - parseInt(a.data.year));
 ---
 <BaseLayout title="Projects — Luna Araújo" description="Portfolio projects">
   <h1 class="text-3xl font-bold">Projects</h1>
-  <div class="mt-6 grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+  <div class="mt-6 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
     {projects.map((project) => (
       <a href={`/projects/${project.slug}`} class="project-card">
         {project.data.image && (
