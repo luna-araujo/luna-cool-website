@@ -7,16 +7,56 @@ const basePath = import.meta.env.BASE_URL;
 const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year) - parseInt(a.data.year));
 ---
 <BaseLayout title="Projects — Luna Araújo" description="Portfolio projects">
-  <h1 class="text-3xl font-bold">Projects</h1>
-  <div class="mt-6 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-    {projects.map((project) => (
-      <a href={basePath + `projects/${project.slug}`} class="project-card">
-        {project.data.image && (
-          <img src={basePath + project.data.image.slice(1)} alt={project.data.title} />
-        )}
-        <h3>{project.data.title}</h3>
-        <p>{project.data.summary}</p>
-      </a>
-    ))}
+  <div class="relative">
+    <div id="projects-carousel" class="flex gap-6 overflow-x-hidden scroll-smooth">
+      {projects.map((project) => (
+        <a href={basePath + `projects/${project.slug}`} class="project-card flex-none w-80">
+          {project.data.image && (
+            <img src={basePath + project.data.image.slice(1)} alt={project.data.title} />
+          )}
+          <h3>{project.data.title}</h3>
+          <p>{project.data.summary}</p>
+          <div class="project-meta">
+            <span>{project.data.year}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+    <button
+      id="projects-prev-btn"
+      class="absolute left-0 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg z-10"
+      aria-label="Previous project"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    <button
+      id="projects-next-btn"
+      class="absolute right-0 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg z-10"
+      aria-label="Next project"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
   </div>
 </BaseLayout>
+
+<script>
+  const projectsCarousel = document.getElementById('projects-carousel');
+  const projectsPrevBtn = document.getElementById('projects-prev-btn');
+  const projectsNextBtn = document.getElementById('projects-next-btn');
+
+  if (projectsCarousel && projectsPrevBtn && projectsNextBtn) {
+    const cardWidth = 320 + 24; // w-80 (320px) + gap (24px)
+    
+    projectsPrevBtn.addEventListener('click', () => {
+      projectsCarousel.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    });
+
+    projectsNextBtn.addEventListener('click', () => {
+      projectsCarousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    });
+  }
+</script>
