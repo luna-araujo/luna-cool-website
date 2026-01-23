@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   /* Reference light theme (gradient_and_fonts_reference.jpeg) */
   --bg: #e9e8e5;
@@ -50,13 +56,17 @@ html[data-theme="dark"] {
 body {
   @apply bg-[var(--bg)] text-[var(--text)];
   font-family: var(--font-sans);
+  padding-top: 24px; /* Reserve space for top gradient */
   padding-bottom: var(--bottom-nav-height);
 }
 
 
 
 .container {
-  @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0;
+  padding: 0;
 }
 
 .card {
@@ -86,7 +96,7 @@ body {
   right: 0;
   height: 24px;
   background: var(--top-gradient);
-  z-index: 60;
+  z-index: 1;
 }
 
 /* Cursor-follow block */
@@ -115,7 +125,7 @@ body {
   bottom: 0;
   height: var(--bottom-nav-height);
   background: #0b0b0b;
-  z-index: 60;
+  z-index: 1;
 }
 
 .bottom-nav__inner {

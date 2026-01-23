@@ -2,61 +2,413 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import "../../styles/project-card.css";
+import "../../styles/projects-view.css";
+import fs from "node:fs";
+import path from "node:path";
 
 const basePath = import.meta.env.BASE_URL;
-const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year) - parseInt(a.data.year));
+const projectsRaw = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year || '0') - parseInt(a.data.year || '0'));
+
+const projects = await Promise.all(projectsRaw.map(async (project) => {
+  const { Content } = await project.render();
+  
+  const galleryPath = path.join(process.cwd(), "public", "images", "projects", project.slug, "gallery");
+  const hasGallery = fs.existsSync(galleryPath);
+  let galleryImages: string[] = [];
+  
+  if (hasGallery) {
+      try {
+          const files = fs.readdirSync(galleryPath);
+          const imageFiles = files.filter(file => /\.(png|jpg|jpeg|gif|webp)$/i.test(file));
+          galleryImages = imageFiles
+            .sort((a, b) => {
+              const numA = parseInt(a.match(/\d+/)?.[0] || '0');
+              const numB = parseInt(b.match(/\d+/)?.[0] || '0');
+              return numA - numB;
+            })
+            .map(file => basePath + `images/projects/${project.slug}/gallery/${file}`);
+      } catch (e) {
+          /* ignore */
+      }
+  }
+  
+  // Combine main image and gallery images into one list for the slideshow
+  const allImages = [];
+  if (project.data.image) {
+      allImages.push(basePath + project.data.image.slice(1));
+  }
+  allImages.push(...galleryImages);
+  
+  return {
+      slug: project.slug,
+      data: project.data,
+      Content,
+      slides: allImages
+  };
+}));
 ---
+
 <BaseLayout title="Projects — Luna Araújo" description="Portfolio projects">
-  <div class="relative">
-    <div id="projects-carousel" class="flex gap-6 overflow-x-hidden scroll-smooth">
-      {projects.map((project) => (
-        <a href={basePath + `projects/${project.slug}`} class="project-card flex-none w-80">
-          {project.data.image && (
-            <img src={basePath + project.data.image.slice(1)} alt={project.data.title} />
-          )}
-          <h3>{project.data.title}</h3>
-          <p>{project.data.summary}</p>
-          <div class="project-meta">
-            <span>{project.data.year}</span>
-          </div>
-        </a>
-      ))}
-    </div>
-    <button
-      id="projects-prev-btn"
-      class="absolute left-0 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg z-10"
-      aria-label="Previous project"
-    >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+<div class="page-container">
+  <div class="carousel-wrapper">
+    <!-- Previous Button -->
+    <button id="prev-btn" class="nav-btn" aria-label="Previous project">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
       </svg>
     </button>
-    <button
-      id="projects-next-btn"
-      class="absolute right-0 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg z-10"
-      aria-label="Next project"
-    >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+
+    <!-- Carousel Viewport -->
+    <div class="viewport">
+      <div class="track" id="track">
+        {projects.map((item) => (
+          <button 
+            type="button"
+            class="project-card carousel-item text-left cursor-pointer"
+            data-target={`#modal-${item.slug}`}
+          >
+            {item.data.image && (
+              <img src={basePath + item.data.image.slice(1)} alt={item.data.title} />
+            )}
+            <h3>{item.data.title}</h3>
+            <p>{item.data.summary}</p>
+            <div class="project-meta">
+              <span>{item.data.year}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Next Button -->
+    <button id="next-btn" class="nav-btn" aria-label="Next project">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
       </svg>
     </button>
   </div>
+</div>
+
+<!-- Project Modals -->
+{projects.map((item) => (
+  <dialog id={`modal-${item.slug}`} class="project-modal" aria-hidden="true">
+    <div class="modal-inner">
+      <button class="modal-close-btn" aria-label="Close modal"></button>
+
+      <div class="modal-content-grid">
+        <!-- Left Column: Slideshow -->
+        <div class="modal-media-col" id={`gallery-${item.slug}`}>
+          {item.slides.length > 0 ? (
+            <div class="gallery-slideshow" data-slides={JSON.stringify(item.slides)}>
+               <button class="gallery-ctrl-btn prev" aria-label="Previous image" hidden={item.slides.length <= 1}>
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                 </svg>
+               </button>
+               
+               <img 
+                 src={item.slides[0]} 
+                 alt={item.data.title} 
+                 class="slide-image cursor-pointer"
+                 data-index="0"
+               />
+               
+               <button class="gallery-ctrl-btn next" aria-label="Next image" hidden={item.slides.length <= 1}>
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                 </svg>
+               </button>
+
+               {item.slides.length > 1 && (
+                  <div class="gallery-counter">1 / {item.slides.length}</div>
+               )}
+            </div>
+          ) : (
+            <div class="bg-gray-800 w-full aspect-video flex items-center justify-center text-gray-500">
+               No Image
+            </div>
+          )}
+        </div>
+
+        <!-- Right Column: Text Content -->
+        <div class="modal-info-col">
+          <div class="modal-header">
+            <h2 class="modal-title">{item.data.title}</h2>
+            <div class="modal-meta-row">
+              {item.data.role && <span class="meta-tag">{item.data.role.toUpperCase()}</span>}
+              <span class="meta-year">{item.data.year}</span>
+            </div>
+            <div class="separator"></div>
+          </div>
+          
+          <div class="prose prose-invert max-w-none modal-description">
+            <item.Content />
+          </div>
+
+          <div class="modal-footer">
+             {item.data.link && (
+               <a href={item.data.link} target="_blank" rel="noopener noreferrer" class="play-link">
+                 Visit Project <span class="arrow">→</span>
+               </a>
+             )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+))}
+
+<!-- Lightbox Overlay (Shared) -->
+<dialog id="lightbox" class="lightbox-overlay">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Close Lightbox">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+    <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="Full size view" />
+    </div>
+</dialog>
+
 </BaseLayout>
 
 <script>
-  const projectsCarousel = document.getElementById('projects-carousel');
-  const projectsPrevBtn = document.getElementById('projects-prev-btn');
-  const projectsNextBtn = document.getElementById('projects-next-btn');
+  // --- Carousel Logic for Project Cards (Preserved) ---
+  const track = document.getElementById('track');
+  const nextBtn = document.getElementById('next-btn');
+  const prevBtn = document.getElementById('prev-btn');
 
-  if (projectsCarousel && projectsPrevBtn && projectsNextBtn) {
-    const cardWidth = 320 + 24; // w-80 (320px) + gap (24px)
+  let isAnimating = false;
+
+  const moveNext = () => {
+    if (isAnimating || !track) return;
+    const style = window.getComputedStyle(track);
+    const gap = parseFloat(style.gap) || 0;
+    const firstChild = track.firstElementChild;
+    const itemWidth = firstChild ? firstChild.getBoundingClientRect().width : 0;
+    const moveAmount = itemWidth + gap;
+
+    isAnimating = true;
+    track.style.transition = 'transform 0.5s ease-in-out';
+    track.style.transform = `translateX(-${moveAmount}px)`;
+
+    const transitionEnd = () => {
+      track.removeEventListener('transitionend', transitionEnd);
+      track.style.transition = 'none';
+      if (firstChild) track.appendChild(firstChild);
+      track.style.transform = 'translateX(0)';
+      setTimeout(() => { isAnimating = false; }, 10);
+    };
+    track.addEventListener('transitionend', transitionEnd);
+  };
+
+  const movePrev = () => {
+    if (isAnimating || !track) return;
+    const style = window.getComputedStyle(track);
+    const gap = parseFloat(style.gap) || 0;
+    const lastChild = track.lastElementChild;
+    if (!lastChild) return;
     
-    projectsPrevBtn.addEventListener('click', () => {
-      projectsCarousel.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-    });
+    const itemWidth = lastChild.getBoundingClientRect().width;
+    const moveAmount = itemWidth + gap;
 
-    projectsNextBtn.addEventListener('click', () => {
-      projectsCarousel.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    isAnimating = true;
+    track.style.transition = 'none';
+    track.insertBefore(lastChild, track.firstElementChild);
+    track.style.transform = `translateX(-${moveAmount}px)`;
+    void track.offsetHeight;
+    track.style.transition = 'transform 0.5s ease-in-out';
+    track.style.transform = 'translateX(0)';
+
+    const transitionEnd = () => {
+      track.removeEventListener('transitionend', transitionEnd);
+      isAnimating = false;
+    };
+    track.addEventListener('transitionend', transitionEnd);
+  };
+
+  if (nextBtn && prevBtn) {
+    nextBtn.addEventListener('click', moveNext);
+    prevBtn.addEventListener('click', movePrev);
+  }
+
+  // --- Modal Logic ---
+  const cards = document.querySelectorAll('.project-card');
+  const modals = document.querySelectorAll('.project-modal');
+  const closeButtons = document.querySelectorAll('.modal-close-btn');
+  
+  const openModal = (modal, updateHistory = true) => {
+      document.body.style.overflow = 'hidden';
+      if (modal.showModal) {
+          modal.showModal();
+      } else {
+          modal.setAttribute('open', '');
+      }
+      // Reset animations/visibility
+      modal.style.visibility = 'visible';
+      modal.style.opacity = '1';
+
+      if (updateHistory) {
+         const slug = modal.id.replace('modal-', '');
+         history.pushState({ modalId: modal.id }, '', `#${slug}`);
+      }
+  };
+
+  const closeModal = (modal, updateHistory = true) => {
+      document.body.style.overflow = 'hidden'; // Keep hidden during transition to avoid flicker
+      modal.style.opacity = '0';
+      modal.style.visibility = 'hidden';
+      setTimeout(() => {
+        if (modal.close) modal.close();
+        else modal.removeAttribute('open');
+        document.body.style.overflow = '';
+      }, 200);
+
+      if (updateHistory) {
+         // Push a clean state without hash
+         history.pushState(null, '', window.location.pathname);
+      }
+  };
+
+  cards.forEach(card => {
+      card.addEventListener('click', (e) => {
+          if (e.target.tagName === 'A') return; // let normal links work
+          const targetId = card.getAttribute('data-target');
+          const modal = document.querySelector(targetId);
+          if (modal) openModal(modal, true);
+      });
+  });
+
+  closeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+          const modal = btn.closest('.project-modal');
+          closeModal(modal, true);
+      });
+  });
+
+  modals.forEach(modal => {
+      modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+              closeModal(modal, true);
+          }
+      });
+      // Handle ESC key or native cancel
+      modal.addEventListener('cancel', (e) => {
+          e.preventDefault(); // Prevent default close to handle animation and history manually
+          closeModal(modal, true);
+      });
+  });
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', (e) => {
+      // Close any open modals first (without pushing to history again)
+      document.querySelectorAll('.project-modal[open]').forEach(m => closeModal(m, false));
+      
+      const hash = window.location.hash;
+      if (hash) {
+          const slug = hash.substring(1);
+          const modal = document.getElementById(`modal-${slug}`);
+          if (modal) {
+              openModal(modal, false); 
+          }
+      }
+  });
+
+  // Initial load check
+  window.addEventListener('load', () => {
+      const hash = window.location.hash;
+      if (hash) {
+          const slug = hash.substring(1);
+          const modal = document.getElementById(`modal-${slug}`);
+          if (modal) openModal(modal, false);
+      }
+  });
+
+  // --- Lightbox Logic ---
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  const openLightbox = (src) => {
+      if (!lightbox || !lightboxImg) return;
+      lightboxImg.src = src;
+      // Use showModal to stay in top layer above the opened project modal
+      if (lightbox.showModal) lightbox.showModal();
+      else {
+        lightbox.setAttribute('open', '');
+        lightbox.style.display = 'flex';
+      }
+  };
+
+  const hideLightbox = () => {
+      if (!lightbox) return;
+      if (lightbox.close) lightbox.close();
+      else {
+        lightbox.removeAttribute('open');
+        lightbox.style.display = 'none';
+      }
+      
+      if (lightboxImg) setTimeout(() => { lightboxImg.src = ''; }, 200); 
+  };
+
+  if (lightboxClose) lightboxClose.addEventListener('click', hideLightbox);
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+        // Close if clicking backend (dialog element itself), not content
+        if (e.target === lightbox) hideLightbox();
+    });
+    // Prevent closing parent modal when pressing escape on lightbox
+    lightbox.addEventListener('cancel', (e) => {
+        e.stopPropagation();
     });
   }
+
+  // --- Gallery Slideshow Logic ---
+  document.querySelectorAll('.gallery-slideshow').forEach(container => {
+      const slides = JSON.parse(container.getAttribute('data-slides') || '[]');
+      const img = container.querySelector('.slide-image');
+      const prevBtn = container.querySelector('.prev');
+      const nextBtn = container.querySelector('.next');
+      const counter = container.querySelector('.gallery-counter');
+      
+      let currentIndex = 0;
+      
+      const updateSlide = () => {
+          if (!img) return;
+          img.style.opacity = '0.5'; // Simple fade effect
+          setTimeout(() => {
+            img.src = slides[currentIndex];
+            img.setAttribute('data-index', currentIndex);
+            img.style.opacity = '1';
+            
+            if (counter) {
+                counter.textContent = `${currentIndex + 1} / ${slides.length}`;
+            }
+          }, 150);
+      };
+
+      if (prevBtn) {
+          prevBtn.addEventListener('click', (e) => {
+              e.stopPropagation(); // prevent lightbox trigger or other clicks
+              currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+              updateSlide();
+          });
+      }
+
+      if (nextBtn) {
+          nextBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              currentIndex = (currentIndex + 1) % slides.length;
+              updateSlide();
+          });
+      }
+      
+      // Click on image opens lightbox
+      if (img) {
+          img.addEventListener('click', () => {
+              openLightbox(slides[currentIndex]);
+          });
+      }
+  });
+
 </script>

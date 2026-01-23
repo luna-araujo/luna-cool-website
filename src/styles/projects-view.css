@@ -1,0 +1,386 @@
+/* --- Layout & Carousel --- */
+.page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: calc(100vh - 24px - var(--bottom-nav-height, 0px));
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.track {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  will-change: transform;
+}
+
+.carousel-item {
+  flex: 0 0 calc((100% - 3rem) / 4);
+  width: calc((100% - 3rem) / 4);
+  min-width: 0;
+  box-sizing: border-box;
+  height: auto;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.carousel-item img {
+   max-width: 100%;
+   align-self: center;
+}
+
+@media (max-width: 768px) {
+  .carousel-item {
+     flex: 0 0 calc((100% - 1rem) / 2);
+  }
+}
+
+.nav-btn {
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  padding: 0.5rem;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.nav-btn:hover {
+  opacity: 0.8;
+}
+
+.nav-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* --- Modal Styles --- */
+.project-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  padding: 0;
+  margin: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  color: white;
+}
+
+.project-modal[open] {
+  visibility: visible;
+  opacity: 1;
+  display: flex; 
+}
+
+.project-modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+} 
+
+.modal-inner {
+  background: #000;
+  width: 90%;
+  max-width: 1000px;
+  /* Fixed height structure to prevent full modal scroll */
+  height: 70vh;
+  position: relative;
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent body scroll */
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #ff4733;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+  padding: 0;
+}
+.modal-close-btn:hover {
+  background: #ff6b5c;
+  transform: scale(1.2);
+}
+.modal-close-btn svg {
+    width: 1.5rem; height: 1.5rem;
+}
+
+.modal-content-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr; /* More space for image */
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0; /* Important for nested overflow */
+}
+
+/* Left Col - Slideshow */
+.modal-media-col {
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: none;
+  overflow: hidden;
+  position: relative;
+  padding: 1rem;
+}
+
+.gallery-slideshow {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: none;
+    border-radius: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-ctrl-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    z-index: 10;
+}
+.gallery-ctrl-btn:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-50%) scale(1.1);
+}
+.gallery-ctrl-btn.prev {
+    left: 1rem;
+}
+.gallery-ctrl-btn.next {
+    right: 1rem;
+}
+.gallery-counter {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    color: #ccc;
+    font-family: var(--font-mono);
+}
+
+/* Right Col - Text */
+.modal-info-col {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  overflow-y: auto; /* Scroll ONLY text */
+  height: 100%;
+}
+
+.modal-info-col::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-info-col::-webkit-scrollbar-track {
+  background: #111; 
+}
+.modal-info-col::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 4px;
+}
+
+.modal-header {
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-family: var(--font-sans);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.modal-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    color: #888;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+.separator {
+    height: 1px;
+    background: #222;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.modal-description {
+    flex: 1; /* Pushes footer down if content is short */
+    font-family: var(--font-sans);
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+.modal-description p { color: #ccc; }
+.modal-description strong { color: #fff; }
+.modal-description h3, .modal-description h4 { color: #fff; margin-top: 1.5em; }
+
+.modal-footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    flex-shrink: 0;
+}
+
+.play-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    border-bottom: 1px solid white;
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+}
+.play-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+@media (max-width: 900px) {
+    .modal-inner {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+    }
+    .modal-content-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 40vh 1fr; /* Fixed height for image area on mobile */
+        display: block; /* Or keep grid but change rows */
+        overflow-y: auto; /* Scroll whole page on mobile usually better ux than nested */
+    }
+    .modal-media-col {
+        height: 40vh; /* Fixed height */
+        border-right: none;
+        border-bottom: none;
+        padding: 0;
+    }
+    .modal-info-col {
+        padding: 1.5rem;
+        height: auto;
+        overflow-y: visible;
+    }
+}
+
+/* Lightbox */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.95);
+    /* For native dialog logic, let browser handle display, but we want flex centering */
+    display: none; /* hidden by default if not open */
+    align-items: center;
+    justify-content: center;
+    
+    /* Dialog resets */
+    border: none;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+.lightbox-overlay[open] {
+    display: flex;
+}
+.lightbox-overlay::backdrop {
+    background: rgba(0,0,0,0.95);
+}.lightbox-content img {
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
+}
+.lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+}
+.lightbox-close svg {
+    width: 2rem;
+    height: 2rem;
+}
+.hidden {
+    display: none !important;
+}
