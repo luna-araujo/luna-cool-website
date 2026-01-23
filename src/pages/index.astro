@@ -1,80 +1,29 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
-import "../styles/project-card.css";
-
-const basePath = import.meta.env.BASE_URL;
-const projects = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year) - parseInt(a.data.year));
 ---
 <BaseLayout title="Luna Araújo — Home" description="Personal website">
-  <section id="about" class="space-y-4">
-    <h1 class="text-3xl font-bold">Hi, I'm Luna.</h1>
-    <p class="text-[var(--muted)]">
-      I'm a designer and developer specializing in game development and interactive experiences. Currently at 
-      Caleta Gaming, I create visually appealing and mechanically engaging games—from indie platformers to complex 
-      video bingo systems. I work with Unity, pixel art, and game design to bring ideas to life.
-    </p>
-  </section>
-
-  <section id="portfolio" class="mt-12 space-y-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-semibold">Portfolio</h2>
-      <a class="link text-sm" href={basePath + 'projects'}>View all</a>
-    </div>
-    <div class="relative">
-      <div id="projects-carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth p-4">
-        {projects.map((project) => (
-          <a href={basePath + `projects/${project.slug}`} class="project-card flex-none w-64 snap-center">
-            {project.data.image && (
-              <img src={basePath + project.data.image.slice(1)} alt={project.data.title} />
-            )}
-            <h3>{project.data.title}</h3>
-            <p>{project.data.summary}</p>
-          </a>
-        ))}
+  <section class="min-h-[68vh] pt-14 md:pt-24">
+    <div class="grid grid-cols-1 md:grid-cols-[1.35fr_1fr] gap-12 md:gap-24 items-start">
+      <div>
+        <h1 class="text-[clamp(3.4rem,7.4vw,5.9rem)] leading-[0.92] font-normal tracking-[-0.015em]">
+          Luna Araújo
+        </h1>
       </div>
-      <button
-        id="projects-prev-btn"
-        class="absolute left-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg"
-        aria-label="Previous project"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-      <button
-        id="projects-next-btn"
-        class="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg"
-        aria-label="Next project"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
-    </div>
-  </section>
 
-  <section class="mt-12 space-y-4">
-    <h2 class="text-2xl font-semibold">Latest blog</h2>
-    <p class="text-[var(--muted)]">
-      Check out the blog for updates, reflections, and technical notes.
-    </p>
-    <a class="link" href={basePath + 'blog'}>Go to blog</a>
+      <div class="md:pt-3">
+        <div class="font-mono text-[0.95rem] md:text-[1rem] tracking-[0.18em] uppercase text-[var(--text)]">
+          <span class="inline-block mr-7">GAME DEVELOPER</span>
+        </div>
+
+        <p class="mt-8 text-[1.15rem] md:text-[1.25rem] leading-[1.75] text-[var(--text)] max-w-[46ch]">
+          Hi, I'm <span class="font-semibold">Luna</span>. I'm a designer and developer specializing in
+          <span class="underline decoration-2 underline-offset-8">game development</span> and
+          <span class="underline decoration-2 underline-offset-8">interactive experiences</span>. Currently at Caleta Gaming,
+          I create visually appealing and mechanically engaging games—from <em class="italic">indie platformers</em>
+          to complex <em class="italic">video bingo systems</em>. I work with Unity, pixel art, and game design to
+          bring ideas to life.
+        </p>
+      </div>
+    </div>
   </section>
 </BaseLayout>
-
-<script>
-  const projectsCarousel = document.getElementById('projects-carousel');
-  const projectsPrevBtn = document.getElementById('projects-prev-btn');
-  const projectsNextBtn = document.getElementById('projects-next-btn');
-
-  if (projectsCarousel && projectsPrevBtn && projectsNextBtn) {
-    projectsPrevBtn.addEventListener('click', () => {
-      projectsCarousel.scrollBy({ left: -300, behavior: 'smooth' });
-    });
-
-    projectsNextBtn.addEventListener('click', () => {
-      projectsCarousel.scrollBy({ left: 300, behavior: 'smooth' });
-    });
-  }
-</script>

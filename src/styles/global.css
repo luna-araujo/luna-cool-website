@@ -3,48 +3,60 @@
 @tailwind utilities;
 
 :root {
-  /* Catppuccin Latte */
-  --bg: #eff1f5;
-  --text: #4c4f69;
-  --muted: #6c6f85;
-  --card: #e6e9ef;
-  --border: #ccd0da;
-  --accent: #8839ef;
+  /* Reference light theme (gradient_and_fonts_reference.jpeg) */
+  --bg: #e9e8e5;
+  --text: #1b1515;
+  --muted: color-mix(in oklab, var(--text) 70%, white);
+  --card: color-mix(in oklab, var(--bg) 80%, white);
+  --border: #1b1515;
+  --accent: #4101f6;
+
+  --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --top-gradient: linear-gradient(
+    90deg,
+    #9cf0e3 0%,
+    #cff665 20%,
+    #ff4733 35%,
+    #1b1515 65%,
+    #4101f6 95%,
+    #9cf0e3 100%
+  );
+
+  --cursor-gradient: linear-gradient(135deg, #4101f6, #ff4733);
+  --bottom-nav-height: 72px;
 }
 
 :root[data-theme="dark"] {
-  /* Catppuccin Mocha */
-  --bg: #1e1e2e;
-  --text: #cdd6f4;
-  --muted: #a6adc8;
-  --card: #313244;
-  --border: #45475a;
-  --accent: #cba6f7;
+  /* Dark companion theme (kept simple + consistent with the reference palette) */
+  --bg: #1b1515;
+  --text: #e9e8e5;
+  --muted: color-mix(in oklab, var(--text) 70%, black);
+  --card: color-mix(in oklab, var(--bg) 85%, white);
+  --border: color-mix(in oklab, var(--text) 85%, black);
+  --accent: #cff665;
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: light;
   scroll-behavior: smooth;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
   @apply bg-[var(--bg)] text-[var(--text)];
-  font-family: theme("fontFamily.sans");
+  font-family: var(--font-sans);
+  padding-bottom: var(--bottom-nav-height);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    --bg: #1e1e2e;
-    --text: #cdd6f4;
-    --muted: #a6adc8;
-    --card: #313244;
-    --border: #45475a;
-    --accent: #cba6f7;
-  }
-}
+
 
 .container {
-  @apply mx-auto w-full max-w-5xl px-4 md:px-8;
+  @apply mx-auto w-full max-w-6xl px-6 md:px-10;
 }
 
 .card {
@@ -65,14 +77,108 @@ body {
   @apply text-[var(--accent)] hover:underline;
 }
 
-.footer {
-  @apply fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--card)] backdrop-blur-sm;
+
+/* Reference top gradient strip */
+.top-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: var(--top-gradient);
+  z-index: 60;
 }
 
-.footer-links {
-  @apply flex flex-wrap gap-2 justify-center items-center text-xs;
+/* Cursor-follow block */
+.cursor-block {
+  position: fixed;
+  width: 18px;
+  height: 18px;
+  background: var(--cursor-gradient);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 70;
+  transform: translate3d(-9999px, -9999px, 0);
 }
 
-.footer-link {
-  @apply hover:text-[var(--text)] text-[var(--muted)] transition-colors;
+@media (pointer: coarse) {
+  .cursor-block {
+    display: none;
+  }
+}
+
+/* Bottom button nav (reference) */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--bottom-nav-height);
+  background: #0b0b0b;
+  z-index: 60;
+}
+
+.bottom-nav__inner {
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 14px;
+  padding-left: 24px;
+  padding-right: 24px;
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .bottom-nav__inner {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+.bottom-nav__link {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: #e9e8e5;
+  border: 2px solid #e9e8e5;
+  border-top: none;
+  padding: 12px 22px;
+  text-decoration: none;
+  text-transform: lowercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.bottom-nav__link:hover {
+  background: rgba(233, 232, 229, 0.12);
+}
+
+.bottom-nav__link.is-active {
+  background: #e9e8e5;
+  color: #0b0b0b;
+}
+
+@media (max-width: 520px) {
+  :root {
+    --bottom-nav-height: 84px;
+  }
+
+  .bottom-nav__inner {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .bottom-nav__link {
+    min-width: 0;
+    flex: 1 1 auto;
+    padding: 10px 14px;
+  }
 }

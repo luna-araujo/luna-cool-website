@@ -3,6 +3,14 @@ import "../styles/global.css";
 
 const { title = "Luna Araújo", description = "Personal website" } = Astro.props;
 const basePath = import.meta.env.BASE_URL;
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "");
+const rootPath = basePath === "/" ? "" : basePath.replace(/\/$/, "");
+const isActive = (path: string) => {
+  const normalized = path.replace(/\/$/, "");
+  if (normalized === "") return currentPath === rootPath;
+  return currentPath.startsWith(`${rootPath}${normalized}`);
+};
 ---
 <!doctype html>
 <html lang="en">
@@ -12,136 +20,81 @@ const basePath = import.meta.env.BASE_URL;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href={basePath + "favicon.svg"} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   </head>
   <body>
+    <div class="top-gradient" aria-hidden="true"></div>
+    <div id="cursor-block" class="cursor-block" aria-hidden="true"></div>
     <script>
       const stored = localStorage.getItem("theme");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const theme = stored ?? (prefersDark ? "dark" : "light");
+      const theme = stored ?? "light";
       document.documentElement.dataset.theme = theme;
-      
-      // Show correct icon immediately
-      document.addEventListener("DOMContentLoaded", () => {
-        const sunIcon = document.getElementById("sun-icon");
-        const moonIcon = document.getElementById("moon-icon");
-        if (theme === "dark") {
-          sunIcon?.classList.remove("hidden");
-          moonIcon?.classList.add("hidden");
-        } else {
-          sunIcon?.classList.add("hidden");
-          moonIcon?.classList.remove("hidden");
-        }
-      });
     </script>
-    <header class="container py-10">
-      <div class="flex items-center justify-between">
-        <a class="text-xl font-semibold" href={basePath}>Luna Araújo</a>
-        <button
-          class="rounded-full border border-[var(--border)] p-2 hover:bg-[var(--card)] transition-colors"
-          id="theme-toggle"
-          aria-label="Toggle theme"
-        >
-          <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-          </svg>
-          <svg id="moon-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-          </svg>
-        </button>
-      </div>
-      <nav class="mt-4 flex gap-4 text-sm text-[var(--muted)]">
-        <a href={basePath} class="hover:text-[var(--text)]">Home</a>
-        <a href={basePath + 'projects'} class="hover:text-[var(--text)]">Portfolio</a>
-        <a href={basePath + 'blog'} class="hover:text-[var(--text)]">Blog</a>
-        <a href={basePath + 'about'} class="hover:text-[var(--text)]">About</a>
-      </nav>
-    </header>
-    <main class="container pb-16">
+    <main class="container pt-16 pb-16">
       <slot />
     </main>
-    <footer class="footer">
-      <div class="container py-0 pb-1">
-        <div class="footer-links">
-          <div class="flex flex-wrap gap-2 justify-center items-center">
-            <a
-              href="mailto:luna_r_araujo@proton.me"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Email"
-              class="footer-link"
-            >
-              Email
-            </a>
-            <span class="text-[var(--border)]">•</span>
-            <a
-              href="https://github.com/luna-araujo"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              class="footer-link"
-            >
-              GitHub
-            </a>
-            <span class="text-[var(--border)]">•</span>
-            <a
-              href="https://luna-xyz.itch.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="itch.io"
-              class="footer-link"
-            >
-              itch.io
-            </a>
-            <span class="text-[var(--border)]">•</span>
-            <a
-              href="https://www.linkedin.com/in/luribeiroaraujo/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              class="footer-link"
-            >
-              LinkedIn
-            </a>
-            <span class="text-[var(--border)]">•</span>
-            <a
-              href="https://soundcloud.com/luna_softproducts"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="SoundCloud"
-              class="footer-link"
-            >
-              SoundCloud
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
     <script>
-      const button = document.getElementById("theme-toggle");
-      const sunIcon = document.getElementById("sun-icon");
-      const moonIcon = document.getElementById("moon-icon");
-      
-      function updateIcons(theme) {
-        if (theme === "dark") {
-          sunIcon.classList.remove("hidden");
-          moonIcon.classList.add("hidden");
-        } else {
-          sunIcon.classList.add("hidden");
-          moonIcon.classList.remove("hidden");
-        }
+      const cursor = document.getElementById("cursor-block");
+
+      if (cursor && !window.matchMedia("(pointer: coarse)").matches) {
+        let x = -9999;
+        let y = -9999;
+        let targetX = -9999;
+        let targetY = -9999;
+        const offset = { x: 14, y: 14 };
+        const ease = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 0.18;
+
+        const tick = () => {
+          x += (targetX - x) * ease;
+          y += (targetY - y) * ease;
+          cursor.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+          requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+
+        window.addEventListener("mousemove", (e) => {
+          targetX = e.clientX + offset.x;
+          targetY = e.clientY + offset.y;
+        });
+
+        window.addEventListener("mouseleave", () => {
+          targetX = -9999;
+          targetY = -9999;
+        });
       }
-      
-      // Set initial icon based on current theme
-      updateIcons(document.documentElement.dataset.theme);
-      
-      button?.addEventListener("click", () => {
-        const current = document.documentElement.dataset.theme;
-        const next = current === "dark" ? "light" : "dark";
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem("theme", next);
-        updateIcons(next);
-      });
     </script>
+
+    <nav class="bottom-nav" aria-label="Primary">
+      <div class="bottom-nav__inner">
+        <a
+          href={basePath}
+          class={`bottom-nav__link ${isActive("") ? "is-active" : ""}`}
+        >
+          home
+        </a>
+        <a
+          href={basePath + "projects"}
+          class={`bottom-nav__link ${isActive("/projects") ? "is-active" : ""}`}
+        >
+          portfolio
+        </a>
+        <a
+          href={basePath + "about"}
+          class={`bottom-nav__link ${isActive("/about") ? "is-active" : ""}`}
+        >
+          about
+        </a>
+        <a
+          href={basePath + "blog"}
+          class={`bottom-nav__link ${isActive("/blog") ? "is-active" : ""}`}
+        >
+          blog
+        </a>
+      </div>
+    </nav>
   </body>
 </html>
