@@ -28,11 +28,6 @@ const isActive = (path: string) => {
   <body>
     <div class="top-gradient" aria-hidden="true"></div>
     <div id="cursor-block" class="cursor-block" aria-hidden="true"></div>
-    <script>
-      const stored = localStorage.getItem("theme");
-      const theme = stored ?? "light";
-      document.documentElement.dataset.theme = theme;
-    </script>
     <main class="container">
       <slot />
     </main>

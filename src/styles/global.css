@@ -34,23 +34,9 @@
   --bottom-nav-height: 72px;
 }
 
-:root[data-theme="dark"] {
-  /* Dark companion theme (kept simple + consistent with the reference palette) */
-  --bg: #1b1515;
-  --text: #e9e8e5;
-  --muted: color-mix(in oklab, var(--text) 70%, black);
-  --card: color-mix(in oklab, var(--bg) 85%, white);
-  --border: color-mix(in oklab, var(--text) 85%, black);
-  --accent: #cff665;
-}
-
 html {
   color-scheme: light;
   scroll-behavior: smooth;
-}
-
-html[data-theme="dark"] {
-  color-scheme: dark;
 }
 
 body {
