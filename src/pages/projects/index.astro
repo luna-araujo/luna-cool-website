@@ -375,33 +375,63 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       
       const updateSlide = () => {
           if (!img) return;
+
+          // Guard for no slides
+          if (!Array.isArray(slides) || slides.length === 0) {
+              img.removeAttribute('src');
+              if (counter) counter.textContent = `0 / 0`;
+              if (prevBtn) prevBtn.style.display = 'none';
+              if (nextBtn) nextBtn.style.display = 'none';
+              return;
+          }
+
+          // Clamp currentIndex to valid range
+          if (currentIndex < 0) currentIndex = 0;
+          if (currentIndex > slides.length - 1) currentIndex = slides.length - 1;
+
           img.style.opacity = '0.5'; // Simple fade effect
           setTimeout(() => {
             img.src = slides[currentIndex];
             img.setAttribute('data-index', currentIndex);
             img.style.opacity = '1';
-            
+
             if (counter) {
                 counter.textContent = `${currentIndex + 1} / ${slides.length}`;
+            }
+
+            // If there's only one slide, hide both controls
+            if (slides.length <= 1) {
+              if (prevBtn) prevBtn.style.display = 'none';
+              if (nextBtn) nextBtn.style.display = 'none';
+            } else {
+              // Show/hide prev/next depending on position (no wrap)
+              if (prevBtn) prevBtn.style.display = (currentIndex === 0) ? 'none' : '';
+              if (nextBtn) nextBtn.style.display = (currentIndex === slides.length - 1) ? 'none' : '';
             }
           }, 150);
       };
 
-      if (prevBtn) {
+        if (prevBtn) {
           prevBtn.addEventListener('click', (e) => {
-              e.stopPropagation(); // prevent lightbox trigger or other clicks
-              currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-              updateSlide();
+            e.stopPropagation(); // prevent lightbox trigger or other clicks
+            if (slides.length <= 1) return;
+            if (currentIndex > 0) {
+            currentIndex -= 1;
+            updateSlide();
+            }
           });
-      }
+        }
 
-      if (nextBtn) {
+        if (nextBtn) {
           nextBtn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              currentIndex = (currentIndex + 1) % slides.length;
-              updateSlide();
+            e.stopPropagation();
+            if (slides.length <= 1) return;
+            if (currentIndex < slides.length - 1) {
+            currentIndex += 1;
+            updateSlide();
+            }
           });
-      }
+        }
       
       // Click on image opens lightbox
       if (img) {
@@ -409,6 +439,9 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
               openLightbox(slides[currentIndex]);
           });
       }
+
+        // Initialize UI (set button visibility/counter)
+        updateSlide();
   });
 
 </script>
