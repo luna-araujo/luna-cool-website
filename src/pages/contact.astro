@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/contact.css";
+
+const basePath = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Contact — Luna Araújo" description="Contact Luna Araújo">
+  <section class="contact-stage" aria-label="Contact">
+    <section class="contact-card" style="--card-accent: var(--accent);" aria-label="Contact card">
+      <header class="contact-card__header">
+        <h1 class="contact-card__title">Contact</h1>
+      </header>
+
+      <div class="contact-card__body">
+        <p class="contact-lead">
+          Reach out through any of the links below.
+        </p>
+
+        <div class="contact-links" aria-label="Contact links">
+          <a
+            href="mailto:luna_r_araujo@proton.me"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link"
+            aria-label="Email"
+          >
+            <span class="fa-solid fa-envelope icon" aria-hidden="true"></span>
+            <span>Email</span>
+          </a>
+          <a
+            href="https://github.com/luna-araujo"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link"
+            aria-label="GitHub"
+          >
+            <span class="fa-brands fa-github icon" aria-hidden="true"></span>
+            <span>GitHub</span>
+          </a>
+          <a
+            href="https://luna-xyz.itch.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link"
+            aria-label="itch.io"
+          >
+            <span class="fa-brands fa-itch-io icon" aria-hidden="true"></span>
+            <span>itch.io</span>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/luribeiroaraujo/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link"
+            aria-label="LinkedIn"
+          >
+            <span class="fa-brands fa-linkedin icon" aria-hidden="true"></span>
+            <span>LinkedIn</span>
+          </a>
+          <a
+            href="https://soundcloud.com/luna_softproducts"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-link"
+            aria-label="SoundCloud"
+          >
+            <span class="fa-brands fa-soundcloud icon" aria-hidden="true"></span>
+            <span>SoundCloud</span>
+          </a>
+        </div>
+
+        <p class="mt-6" style="color: var(--card-accent, var(--accent));">
+          Back to <a class="link" href={basePath + "about"}>about</a>.
+        </p>
+      </div>
+    </section>
+  </section>
+</BaseLayout>

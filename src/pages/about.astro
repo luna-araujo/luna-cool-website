@@ -1,109 +1,290 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/about.css";
+
+type AboutCard = {
+  id: string;
+  title: string;
+  accent: string;
+  x: number;
+  y: number;
+  w: number;
+  open?: boolean;
+  kind: "text" | "tags";
+  text?: string[];
+  tags?: string[];
+};
+
+const basePath = import.meta.env.BASE_URL;
+
+const cards: AboutCard[] = [
+  {
+    id: "who",
+    title: "Who am I?",
+    accent: "#4101f6",
+    x: 84,
+    y: 120,
+    w: 460,
+    open: true,
+    kind: "text",
+    text: [
+      "My main role is as a Game Designer, but I consider myself a generalist professional.",
+      "Since designing experiences is one of my biggest passions, I've been interested in many different activities throughout my life, such as video editing, scripting, animating, drawing, developing websites and apps…",
+      "Today I dedicate myself to creating games, but I know that each one of these activities were fundamental to my career.",
+    ],
+  },
+  {
+    id: "workwithme",
+    title: "What's like working with me",
+    accent: "#4101f6",
+    x: 700,
+    y: 78,
+    w: 520,
+    open: false,
+    kind: "text",
+    text: [
+      "I care about clarity, fast iteration, and keeping things shippable.",
+      "I like pairing with engineers and artists early so we can find the fun quickly and polish with intention.",
+    ],
+  },
+  {
+    id: "skills",
+    title: "Skills",
+    accent: "#ff4733",
+    x: 590,
+    y: 190,
+    w: 420,
+    open: false,
+    kind: "tags",
+    tags: ["English B2-C1", "Prototyping", "Documentation", "Scripting", "Probability and Statistics"],
+  },
+  {
+    id: "softskills",
+    title: "Soft skills",
+    accent: "#ff4733",
+    x: 360,
+    y: 520,
+    w: 360,
+    open: false,
+    kind: "tags",
+    tags: ["Communication", "Collaboration", "Ownership", "Feedback", "Adaptability"],
+  },
+  {
+    id: "tools",
+    title: "Tools and softwares",
+    accent: "#ff4733",
+    x: 630,
+    y: 420,
+    w: 520,
+    open: false,
+    kind: "tags",
+    tags: ["Unity Engine", "C#", "Git", "HTML", "CSS", "JavaScript", "Node.js", "Electron"],
+  },
+  {
+    id: "experience",
+    title: "My experiences",
+    accent: "#4101f6",
+    x: 980,
+    y: 310,
+    w: 320,
+    open: false,
+    kind: "text",
+    text: [
+      "Game jams, indie prototypes, and shipped casino/video-bingo titles.",
+      "I enjoy bridging design + implementation, especially for UI/UX and moment-to-moment feel.",
+    ],
+  },
+  {
+    id: "games",
+    title: "Games I love",
+    accent: "#ff4733",
+    x: 1090,
+    y: 540,
+    w: 300,
+    open: false,
+    kind: "tags",
+    tags: ["Celeste", "Hades", "Undertale", "Katamari", "Slay the Spire"],
+  },
+];
 ---
 <BaseLayout title="About — Luna Araújo" description="About Luna Araújo">
-  <div class="space-y-8">
-    <section>
-      <h1 class="text-3xl font-bold mb-4">About Me</h1>
-      <div class="space-y-4 text-[var(--muted)]">
-        <p>
-          Hi! I'm Luna Araújo, a designer and developer passionate about creating engaging interactive experiences.
-          I specialize in game development and have worked on various projects ranging from casual mobile games 
-          to complex video bingo systems.
-        </p>
-        <p>
-          Currently, I work at Caleta Gaming where I contribute to the design and development of video bingo 
-          and casino games. My work focuses on creating visually appealing and mechanically engaging gaming 
-          experiences that keep players entertained.
-        </p>
-      </div>
-    </section>
+  <section class="about-stage" aria-label="About cards">
+    {cards.map((card) => (
+      <section
+        class="about-card"
+        data-about-card
+        data-id={card.id}
+        data-open={card.open ? "true" : "false"}
+        style={`--x:${card.x}px; --y:${card.y}px; --w:${card.w}px; --card-accent:${card.accent}; z-index: 1;`}
+        tabindex="0"
+      >
+        <header class="about-card__header">
+          <h2 class="about-card__title">{card.title}</h2>
+          <div class="about-card__controls">
+            <button class="about-card__drag" type="button" aria-label="Drag card" title="Drag">
+              ⠿
+            </button>
+            <button
+              class="about-card__toggle"
+              type="button"
+              aria-label="Toggle card"
+              aria-expanded={card.open ? "true" : "false"}
+            >
+              {card.open ? "−" : "+"}
+            </button>
+          </div>
+        </header>
 
-    <section>
-      <h2 class="text-2xl font-semibold mb-4">Career</h2>
-      <div class="space-y-4 text-[var(--muted)]">
-        <p>
-          My journey in game development started with independent projects and game jams, where I honed my 
-          skills in Unity and game design. I've developed several games including platformers and adventure 
-          titles that have been played by thousands of people worldwide.
-        </p>
-        <p>
-          At Caleta Gaming, I've been involved in the development of multiple successful titles including 
-          Zen Tiger Bingo and Sugar Bingo, contributing to both the visual design and gameplay mechanics 
-          that make these games stand out in the market.
-        </p>
-      </div>
-    </section>
+        <div class="about-card__body">
+          {card.kind === "text" && (
+            <div class="about-card__text">
+              {(card.text ?? []).map((p) => (
+                <p class="mb-3">{p}</p>
+              ))}
+              {card.id === "who" && (
+                <p class="about-card__text">
+                  See my work in <a class="link" href={basePath + "projects"}>projects</a>.
+                </p>
+              )}
+            </div>
+          )}
 
-    <section>
-      <h2 class="text-2xl font-semibold mb-4">Hobbies & Interests</h2>
-      <div class="space-y-4 text-[var(--muted)]">
-        <p>
-          When I'm not working on games, I enjoy exploring new game mechanics, participating in game jams, 
-          and experimenting with different art styles. I'm particularly interested in pixel art and creating 
-          vibrant, colorful game worlds.
-        </p>
-        <p>
-          I also love playing indie games, contributing to open-source projects, and staying up to date with 
-          the latest trends in game design and development.
-        </p>
-      </div>
-    </section>
+          {card.kind === "tags" && (
+            <div class="about-tags" role="list" aria-label={`${card.title} list`}>
+              {(card.tags ?? []).map((tag) => (
+                <span class="about-tag" role="listitem">{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    ))}
+  </section>
 
-    <section>
-      <h2 class="text-2xl font-semibold mb-4">Connect With Me</h2>
-      <div class="flex flex-wrap gap-4">
-        <a
-          href="mailto:luna_r_araujo@proton.me"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Email"
-          class="card hover:shadow-md transition-shadow flex items-center gap-3 px-4 py-3"
-        >
-          <span class="fa-solid fa-envelope icon" aria-hidden="true"></span>
-          <span>Email</span>
-        </a>
-        <a
-          href="https://github.com/luna-araujo"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="GitHub"
-          class="card hover:shadow-md transition-shadow flex items-center gap-3 px-4 py-3"
-        >
-          <span class="fa-brands fa-github icon" aria-hidden="true"></span>
-          <span>GitHub</span>
-        </a>
-        <a
-          href="https://luna-xyz.itch.io"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="itch.io"
-          class="card hover:shadow-md transition-shadow flex items-center gap-3 px-4 py-3"
-        >
-          <span class="fa-brands fa-itch-io icon" aria-hidden="true"></span>
-          <span>itch.io</span>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/luribeiroaraujo/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="LinkedIn"
-          class="card hover:shadow-md transition-shadow flex items-center gap-3 px-4 py-3"
-        >
-          <span class="fa-brands fa-linkedin icon" aria-hidden="true"></span>
-          <span>LinkedIn</span>
-        </a>
-        <a
-          href="https://soundcloud.com/luna_softproducts"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="SoundCloud"
-          class="card hover:shadow-md transition-shadow flex items-center gap-3 px-4 py-3"
-        >
-          <span class="fa-brands fa-soundcloud icon" aria-hidden="true"></span>
-          <span>SoundCloud</span>
-        </a>
-      </div>
-    </section>
-  </div>
+  <script>
+    const stage = document.querySelector<HTMLElement>(".about-stage");
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-about-card]"));
+
+    if (stage && cards.length) {
+      let topZ = 10;
+
+      const bringToFront = (card: HTMLElement) => {
+        topZ += 1;
+        card.style.zIndex = String(topZ);
+      };
+
+      const getVarPx = (el: HTMLElement, name: string) => {
+        const raw = getComputedStyle(el).getPropertyValue(name).trim();
+        const num = parseFloat(raw.replace("px", ""));
+        return Number.isFinite(num) ? num : 0;
+      };
+
+      const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
+      const clampCardIntoStage = (card: HTMLElement) => {
+        const stageRect = stage.getBoundingClientRect();
+        const cardRect = card.getBoundingClientRect();
+
+        const maxX = Math.max(0, stageRect.width - cardRect.width);
+        const maxY = Math.max(0, stageRect.height - cardRect.height);
+
+        const x = getVarPx(card, "--x");
+        const y = getVarPx(card, "--y");
+        const nextX = clamp(x, 0, maxX);
+        const nextY = clamp(y, 0, maxY);
+
+        if (nextX !== x) card.style.setProperty("--x", `${nextX}px`);
+        if (nextY !== y) card.style.setProperty("--y", `${nextY}px`);
+      };
+
+      for (const card of cards) {
+        const toggle = card.querySelector<HTMLButtonElement>(".about-card__toggle");
+        const drag = card.querySelector<HTMLButtonElement>(".about-card__drag");
+
+        card.addEventListener("pointerdown", (e: PointerEvent) => {
+          // Don't steal clicks from the toggle button.
+          const target = e.target as HTMLElement | null;
+          if (target?.closest(".about-card__toggle")) return;
+          bringToFront(card);
+        });
+
+        card.addEventListener("focus", () => bringToFront(card));
+
+        if (toggle) {
+          toggle.addEventListener("click", () => {
+            bringToFront(card);
+            const open = card.getAttribute("data-open") === "true";
+            const next = !open;
+            card.setAttribute("data-open", next ? "true" : "false");
+            toggle.setAttribute("aria-expanded", next ? "true" : "false");
+            toggle.textContent = next ? "−" : "+";
+
+            // Expansion changes card height; keep it inside the stage.
+            requestAnimationFrame(() => clampCardIntoStage(card));
+          });
+        }
+
+        if (drag) {
+          let startX = 0;
+          let startY = 0;
+          let baseX = 0;
+          let baseY = 0;
+          let dragging = false;
+
+          drag.addEventListener("pointerdown", (e: PointerEvent) => {
+            bringToFront(card);
+            dragging = true;
+            card.classList.add("is-dragging");
+            drag.setPointerCapture(e.pointerId);
+
+            startX = e.clientX;
+            startY = e.clientY;
+            baseX = getVarPx(card, "--x");
+            baseY = getVarPx(card, "--y");
+            e.preventDefault();
+          });
+
+          drag.addEventListener("pointermove", (e: PointerEvent) => {
+            if (!dragging) return;
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            let nextX = baseX + dx;
+            let nextY = baseY + dy;
+
+            // Keep the card mostly within the stage bounds on desktop.
+            const stageRect = stage.getBoundingClientRect();
+            const cardRect = card.getBoundingClientRect();
+
+            const maxX = Math.max(0, stageRect.width - cardRect.width);
+            const maxY = Math.max(0, stageRect.height - cardRect.height);
+            nextX = clamp(nextX, 0, maxX);
+            nextY = clamp(nextY, 0, maxY);
+
+            card.style.setProperty("--x", `${nextX}px`);
+            card.style.setProperty("--y", `${nextY}px`);
+          });
+
+          const endDrag = () => {
+            if (!dragging) return;
+            dragging = false;
+            card.classList.remove("is-dragging");
+
+            // If the card changed size while dragging (or stage resized), re-clamp.
+            clampCardIntoStage(card);
+          };
+
+          drag.addEventListener("pointerup", endDrag);
+          drag.addEventListener("pointercancel", endDrag);
+        }
+
+        // Ensure initial positions are valid for the current viewport.
+        clampCardIntoStage(card);
+      }
+
+      window.addEventListener("resize", () => {
+        for (const card of cards) clampCardIntoStage(card);
+      });
+    }
+  </script>
 </BaseLayout>

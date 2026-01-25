@@ -119,6 +119,12 @@ const isActive = (path: string) => {
           about
         </a>
         <a
+          href={basePath + "contact"}
+          class={`bottom-nav__link ${isActive("/contact") ? "is-active" : ""}`}
+        >
+          contact
+        </a>
+        <a
           href={basePath + "blog"}
           class={`bottom-nav__link ${isActive("/blog") ? "is-active" : ""}`}
         >

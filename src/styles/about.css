@@ -1,0 +1,140 @@
+/* About page: draggable, expandable cards */
+
+.about-stage {
+  position: relative;
+  min-height: calc(100vh - 24px - var(--bottom-nav-height));
+  padding: 24px;
+  overflow: hidden;
+}
+
+.about-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w, 420px);
+  transform: translate3d(var(--x, 0px), var(--y, 0px), 0);
+
+  background: var(--bg);
+  border: 2px solid var(--card-accent, var(--accent));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.about-card.is-dragging {
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
+}
+
+.about-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px;
+}
+
+.about-card__title {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--card-accent, var(--accent));
+  font-size: 1.05rem;
+  line-height: 1.1;
+}
+
+.about-card__controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.about-card__drag {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--card-accent, var(--accent));
+  color: var(--card-accent, var(--accent));
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.about-card.is-dragging .about-card__drag {
+  cursor: grabbing;
+}
+
+.about-card:hover .about-card__drag,
+.about-card:focus-within .about-card__drag {
+  opacity: 1;
+}
+
+.about-card__toggle {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  line-height: 1;
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--card-accent, var(--accent));
+  color: var(--bg);
+  background: var(--card-accent, var(--accent));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-card__body {
+  padding: 0 18px 18px 18px;
+  color: var(--card-accent, var(--accent));
+  max-height: 340px;
+  overflow: auto;
+}
+
+.about-card[data-open="false"] .about-card__body {
+  display: none;
+}
+
+.about-card__text {
+  color: var(--card-accent, var(--accent));
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.about-tag {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  padding: 6px 10px;
+  border: 2px solid var(--card-accent, var(--accent));
+  color: var(--card-accent, var(--accent));
+  background: transparent;
+}
+
+/* Mobile fallback: stack cards, no overlap */
+@media (max-width: 900px) {
+  .about-stage {
+    overflow: visible;
+    padding: 16px;
+  }
+
+  .about-card {
+    position: relative;
+    transform: none;
+    width: 100%;
+    margin-bottom: 14px;
+  }
+
+  .about-card__drag {
+    display: none;
+  }
+}
