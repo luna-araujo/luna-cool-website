@@ -3,26 +3,32 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout title="Luna Araújo — Home" description="Personal website">
   <section class="min-h-[68vh] pt-14 md:pt-24">
-    <div class="grid grid-cols-1 md:grid-cols-[1.35fr_1fr] gap-12 md:gap-24 items-start">
-      <div>
-        <h1 class="text-[clamp(3.4rem,7.4vw,5.9rem)] leading-[0.92] font-normal tracking-[-0.015em]">
-          Luna Araújo
-        </h1>
-      </div>
-
-      <div class="md:pt-3">
-        <div class="font-mono text-[0.95rem] md:text-[1rem] tracking-[0.18em] uppercase text-[var(--text)]">
-          <span class="inline-block mr-7">GAME DEVELOPER</span>
+    <div class="mx-auto max-w-[1152px] px-6 md:px-10">
+      <div class="grid grid-cols-1 md:grid-cols-[1.25fr_1fr] gap-12 md:gap-24 items-start">
+        <div>
+          <h1 class="text-[clamp(3.4rem,7.4vw,5.9rem)] leading-[0.92] font-normal tracking-[-0.015em]">
+            Luna Araújo
+          </h1>
         </div>
 
-        <p class="mt-8 text-[1.15rem] md:text-[1.25rem] leading-[1.75] text-[var(--text)]">
-          Hi, I'm <span class="font-semibold">Luna</span>. I'm a designer and developer specializing in
-          <span class="underline decoration-2 underline-offset-8">game development</span> and
-          <span class="underline decoration-2 underline-offset-8">interactive experiences</span>. Currently at Caleta Gaming,
-          I create visually appealing and mechanically engaging games—from <em class="italic">indie platformers</em>
-          to complex <em class="italic">video bingo systems</em>. I work with Unity, pixel art, and game design to
-          bring ideas to life.
-        </p>
+        <div class="md:pt-3 flex flex-col items-start">
+          <div class="font-mono text-[0.95rem] md:text-[1rem] tracking-[0.18em] uppercase text-[var(--text)] text-left">
+            <span class="inline-block">GAME DEVELOPER</span>
+          </div>
+
+          <div class="mt-6 text-[var(--text)] text-left">
+            <span class="fa-solid fa-cloud-moon text-4xl" aria-hidden="true"></span>
+          </div>
+
+          <p class="mt-10 max-w-[42ch] text-left text-[1.15rem] md:text-[1.25rem] leading-[1.75] text-[var(--text)]">
+            Hi, I'm <span class="font-semibold">Luna</span>. I'm a designer and developer specializing in
+            <span class="underline decoration-2 underline-offset-8">game development</span> and
+            <span class="underline decoration-2 underline-offset-8">interactive experiences</span>. Currently at Caleta Gaming,
+            I create visually appealing and mechanically engaging games—from <em class="italic">indie platformers</em>
+            to complex <em class="italic">video bingo systems</em>. I work with Unity, pixel art, and game design to
+            bring ideas to life.
+          </p>
+        </div>
       </div>
     </div>
   </section>
