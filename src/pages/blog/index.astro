@@ -2,21 +2,120 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
+import "../../styles/blog-index.css";
+
 const basePath = import.meta.env.BASE_URL;
 const posts = await getCollection("blog");
 const sorted = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const showYearInMonthHeading = new Set(sorted.map((p) => p.data.date.getFullYear())).size > 1;
+const monthFormatter = new Intl.DateTimeFormat("en-US", { month: "long" });
+const monthYearFormatter = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" });
+const dateFormatter = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
+
+type MonthGroup = {
+  key: string;
+  monthDate: Date;
+  label: string;
+  posts: typeof sorted;
+};
+
+const monthKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+const groupsMap = new Map<string, MonthGroup>();
+
+for (const post of sorted) {
+  const d = post.data.date;
+  const key = monthKey(d);
+  const existing = groupsMap.get(key);
+  if (existing) {
+    existing.posts.push(post);
+    continue;
+  }
+
+  const monthDate = new Date(d.getFullYear(), d.getMonth(), 1);
+  const label = showYearInMonthHeading ? monthYearFormatter.format(d) : monthFormatter.format(d);
+  groupsMap.set(key, { key, monthDate, label, posts: [post] });
+}
+
+const grouped = Array.from(groupsMap.values()).sort((a, b) => b.monthDate.valueOf() - a.monthDate.valueOf());
 ---
 <BaseLayout title="Blog — Luna Araújo" description="Blog posts">
-  <h1 class="text-3xl font-bold">Blog</h1>
-  <div class="mt-6 space-y-4">
-    {sorted.map((post) => (
-      <article class="card">
-        <h2 class="text-xl font-semibold">
-          <a class="link" href={basePath + `blog/${post.slug}`}>{post.data.title}</a>
-        </h2>
-        <p class="text-sm text-[var(--muted)]">{post.data.description}</p>
-        <p class="text-xs text-[var(--muted)]">{post.data.date.toDateString()}</p>
-      </article>
-    ))}
-  </div>
+  <section class="blog-index">
+    <header class="blog-index__header">
+      <h1 class="blog-index__title">Luna's blog</h1>
+      <div class="blog-search">
+        <label class="sr-only" for="blog-search">Search the blog</label>
+        <i class="fa-solid fa-magnifying-glass blog-search__icon" aria-hidden="true"></i>
+        <input
+          id="blog-search"
+          class="blog-search__input"
+          type="search"
+          placeholder="SEARCH THE BLOG"
+          autocomplete="off"
+        />
+      </div>
+    </header>
+
+    <div class="blog-index__months">
+      {grouped.map((group) => (
+        <section class="blog-month" data-month={group.key}>
+          <h2 class="blog-month__title">{group.label}</h2>
+          <div class="blog-month__grid">
+            {group.posts.map((post) => (
+              <a
+                class="blog-card"
+                href={basePath + `blog/${post.slug}`}
+                data-title={post.data.title}
+                data-description={post.data.description}
+                data-tags={post.data.tags?.join(" ")}
+              >
+                <h3 class="blog-card__title">{post.data.title}</h3>
+                <div class="blog-card__meta">
+                  <span class="blog-card__date">{dateFormatter.format(post.data.date)}</span>
+                </div>
+                {post.data.tags?.length ? (
+                  <div class="blog-card__tags">
+                    {post.data.tags.map((t) => (
+                      <span class="blog-card__tag">#{t}</span>
+                    ))}
+                  </div>
+                ) : null}
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
 </BaseLayout>
+
+<script is:inline>
+  const input = document.getElementById("blog-search");
+  const cards = Array.from(document.querySelectorAll(".blog-card"));
+  const months = Array.from(document.querySelectorAll(".blog-month"));
+
+  const normalize = (value) => (value || "").toString().toLowerCase();
+
+  const applyFilter = () => {
+    const q = normalize(input?.value).trim();
+
+    for (const card of cards) {
+      const haystack = normalize(
+        `${card.dataset.title || ""} ${card.dataset.description || ""} ${card.dataset.tags || ""}`
+      );
+      const visible = q.length === 0 || haystack.includes(q);
+      card.classList.toggle("is-hidden", !visible);
+    }
+
+    for (const month of months) {
+      const hasVisible = month.querySelector(".blog-card:not(.is-hidden)");
+      month.classList.toggle("is-hidden", !hasVisible);
+    }
+  };
+
+  if (input) {
+    input.addEventListener("input", applyFilter);
+  }
+
+  applyFilter();
+</script>

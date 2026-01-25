@@ -2,6 +2,8 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
+import "../../styles/blog-post.css";
+
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
@@ -9,15 +11,46 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+const basePath = import.meta.env.BASE_URL;
+const dateFormatter = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
 ---
 <BaseLayout title={`${post.data.title} — Luna Araújo`} description={post.data.description}>
-  <article class="space-y-6">
-    <header class="space-y-2">
-      <h1 class="text-3xl font-bold">{post.data.title}</h1>
-      <p class="text-sm text-[var(--muted)]">{post.data.date.toDateString()}</p>
+  <article class="blog-post">
+    <header class="blog-post__header">
+      <h1 class="blog-post__title">{post.data.title}</h1>
+      <p class="blog-post__date">BLOG POST DATE
+        <span class="blog-post__dateValue">{dateFormatter.format(post.data.date)}</span>
+      </p>
     </header>
-    <div class="prose max-w-none prose-headings:text-[var(--text)] prose-p:text-[var(--text)]">
-      <Content />
+
+    <div class="blog-post__body">
+      <div class="blog-post__content prose max-w-none">
+        <Content />
+      </div>
+
+      {post.data.coverImage ? (
+        <figure class="blog-post__figure">
+          <div class="blog-post__imageWrap">
+            <img
+              class="blog-post__image"
+              src={basePath + post.data.coverImage.replace(/^\//, "")}
+              alt={post.data.coverAlt ?? ""}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          {post.data.coverCaption ? (
+            <figcaption class="blog-post__caption">{post.data.coverCaption}</figcaption>
+          ) : null}
+        </figure>
+      ) : null}
+    </div>
+
+    <div class="blog-post__footer">
+      <a class="blog-post__back" href={basePath + "blog"}>
+        ← GO BACK TO POSTS
+      </a>
     </div>
   </article>
 </BaseLayout>
