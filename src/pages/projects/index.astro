@@ -178,6 +178,13 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
   const nextBtn = document.getElementById('next-btn');
   const prevBtn = document.getElementById('prev-btn');
 
+  const useNativeScrollCarousel = window.matchMedia('(max-width: 640px)').matches;
+  if (useNativeScrollCarousel) {
+    // On mobile: use native horizontal scrolling + scroll-snap (CSS).
+    // The JS carousel logic below rearranges DOM nodes and animates transforms,
+    // which conflicts with natural scrolling.
+  } else {
+
   let isAnimating = false;
 
   const moveNext = () => {
@@ -227,9 +234,10 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
     track.addEventListener('transitionend', transitionEnd);
   };
 
-  if (nextBtn && prevBtn) {
-    nextBtn.addEventListener('click', moveNext);
-    prevBtn.addEventListener('click', movePrev);
+    if (nextBtn && prevBtn) {
+      nextBtn.addEventListener('click', moveNext);
+      prevBtn.addEventListener('click', movePrev);
+    }
   }
 
   // --- Modal Logic ---

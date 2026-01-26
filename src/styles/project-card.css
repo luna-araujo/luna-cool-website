@@ -23,6 +23,7 @@
   object-fit: cover;
   margin-bottom: 1rem;
   background: #c0c0c0;
+  display: block;
 }
 
 .project-card h3 {
@@ -59,4 +60,19 @@
 
 #projects-carousel::-webkit-scrollbar {
   display: none;  /* Chrome and Safari */
+}
+
+@media (max-width: 640px) {
+  .project-card {
+    padding: 0.9rem;
+  }
+
+  .project-card img {
+    aspect-ratio: 3 / 4;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-card h3 {
+    font-size: 1.1rem;
+  }
 }
