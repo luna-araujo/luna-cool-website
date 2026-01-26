@@ -121,15 +121,15 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
   gap: 14px;
-  padding-left: 24px;
+  padding-left: 12px;
   padding-right: 24px;
   max-width: 1152px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 @media (min-width: 768px) {
   .bottom-nav__inner {
-    padding-left: 40px;
+    padding-left: 24px;
     padding-right: 40px;
   }
 }
