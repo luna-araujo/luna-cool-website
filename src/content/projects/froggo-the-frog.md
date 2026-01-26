@@ -1,7 +1,7 @@
 ---
 title: "Froggo the Frog"
 summary: "3D Platformer Game"
-role: "Developer"
+role: "Project Lead / Designer / Developer"
 year: "2020"
 image: "/images/projects/froggo-the-frog/logo.png"
 link: "https://luna-xyz.itch.io/froggo-the-frog"

@@ -1,7 +1,7 @@
 ---
 title: "Sugar Bingo"
 summary: "Video Bingo"
-role: "Designer / Developer"
+role: "Developer"
 year: "2025"
 image: "/images/projects/sugar-bingo/logo.png"
 link: "https://staging.the-rgs.com/open_fun_game/342"
