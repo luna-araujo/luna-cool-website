@@ -94,7 +94,7 @@ body {
   border-radius: 0;
   mix-blend-mode: difference;
   pointer-events: none;
-  z-index: 70;
+  z-index: 9999;
   transform: translate3d(-9999px, -9999px, 0);
 }
 
