@@ -88,10 +88,11 @@ body {
 /* Cursor-follow block */
 .cursor-block {
   position: fixed;
-  width: 18px;
-  height: 18px;
-  background: var(--cursor-gradient);
-  border-radius: 2px;
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border-radius: 0;
+  mix-blend-mode: difference;
   pointer-events: none;
   z-index: 70;
   transform: translate3d(-9999px, -9999px, 0);
