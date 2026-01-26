@@ -151,6 +151,16 @@ body {
   transition: background-color 160ms ease, color 160ms ease;
 }
 
+.bottom-nav__icon {
+  display: none;
+}
+
+.bottom-nav__icon svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
 .bottom-nav__link:hover {
   background: rgba(233, 232, 229, 0.12);
 }
@@ -160,16 +170,16 @@ body {
   color: #0b0b0b;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 640px) {
   :root {
     --bottom-nav-height: 84px;
   }
 
   .bottom-nav__inner {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding-top: 10px;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding-top: 0;
     padding-bottom: 10px;
   }
 
@@ -177,5 +187,20 @@ body {
     min-width: 0;
     flex: 1 1 auto;
     padding: 10px 14px;
+    text-transform: none;
+  }
+
+  .bottom-nav__label {
+    display: none;
+  }
+
+  .bottom-nav__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    font-size: 1.25rem;
+    line-height: 1;
   }
 }

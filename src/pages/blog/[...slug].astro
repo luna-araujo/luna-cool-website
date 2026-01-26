@@ -19,9 +19,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
   <article class="blog-post">
     <header class="blog-post__header">
       <h1 class="blog-post__title">{post.data.title}</h1>
-      <p class="blog-post__date">BLOG POST DATE
-        <span class="blog-post__dateValue">{dateFormatter.format(post.data.date)}</span>
-      </p>
+      <p class="blog-post__date">{dateFormatter.format(post.data.date)}</p>
     </header>
 
     <div class="blog-post__body">
