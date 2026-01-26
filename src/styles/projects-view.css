@@ -165,10 +165,10 @@
 
 .modal-inner {
   background: #000;
-  width: 90%;
-  max-width: 1000px;
-  /* Fixed height structure to prevent full modal scroll */
-  height: 70vh;
+  width: 86%;
+  max-width: 900px;
+  height: auto;
+  max-height: calc(100vh - 4rem);
   position: relative;
   border-radius: 0;
   box-shadow: none;
@@ -182,31 +182,47 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #ff4733;
+  background: transparent;
   border: none;
   cursor: pointer;
   z-index: 20;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  transition: transform 0.2s;
+  padding: 0;
+}
+
+.modal-close-btn::before {
+  content: "";
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  transition: background 0.2s, transform 0.2s;
-  padding: 0;
+  background: #ff4733;
+}
+
+.modal-close-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 .modal-close-btn:hover {
-  background: #ff6b5c;
-  transform: scale(1.2);
+  transform: scale(1.06);
 }
-.modal-close-btn svg {
-    width: 1.5rem; height: 1.5rem;
+
+.modal-close-btn:hover::before {
+  background: #ff6b5c;
 }
 
 .modal-content-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr; /* More space for image */
+  grid-template-columns: 1.25fr 1fr;
   gap: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
   min-height: 0; /* Important for nested overflow */
+  align-items: start;
 }
 
 /* Left Col - Slideshow */
@@ -214,26 +230,51 @@
   background: #000;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
   border-right: none;
   overflow: hidden;
   position: relative;
-  padding: 1rem;
+  padding: 2.25rem 2rem 2rem;
+}
+
+.modal-media-header {
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.modal-media-header .modal-title {
+  margin-bottom: 0;
+}
+
+.modal-media-footer {
+  width: 100%;
+  margin-top: 1.25rem;
+}
+
+.modal-media-date {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #888;
 }
 
 .gallery-slideshow {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: min(520px, 100%);
+  aspect-ratio: 4 / 3;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #111;
+  margin: 0 auto;
 }
 
 .slide-image {
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     box-shadow: none;
     border-radius: 0;
@@ -287,7 +328,9 @@
   flex-direction: column;
   background: #000;
   overflow-y: auto; /* Scroll ONLY text */
-  height: 100%;
+  min-height: 0;
+  height: var(--modal-left-col-height, 70vh);
+  max-height: var(--modal-left-col-height, 70vh);
 }
 
 .modal-info-col::-webkit-scrollbar {
@@ -367,29 +410,53 @@
 }
 
 @media (max-width: 900px) {
+  .project-modal {
+    align-items: flex-start;
+    padding-top: 24px;
+    padding-bottom: calc(var(--bottom-nav-height, 0px) + 12px);
+  }
+
     .modal-inner {
-        height: 100vh;
-        max-height: 100vh;
+    width: calc(100% - 2rem);
+    height: auto;
+    max-height: calc(100svh - var(--bottom-nav-height, 0px) - 24px - 24px);
         border-radius: 0;
         border: none;
+    overflow: auto;
     }
     .modal-content-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: 40vh 1fr; /* Fixed height for image area on mobile */
-        display: block; /* Or keep grid but change rows */
-        overflow-y: auto; /* Scroll whole page on mobile usually better ux than nested */
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  overflow: visible;
     }
     .modal-media-col {
-        height: 40vh; /* Fixed height */
+    height: auto;
         border-right: none;
         border-bottom: none;
-        padding: 0;
+    padding: 1.5rem;
     }
     .modal-info-col {
         padding: 1.5rem;
         height: auto;
         overflow-y: visible;
     }
+
+    .modal-close-btn {
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 48px;
+      height: 48px;
+    }
+
+    .modal-close-btn::before {
+      width: 14px;
+      height: 14px;
+    }
+
+  .gallery-slideshow {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* Lightbox */
