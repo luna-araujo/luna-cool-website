@@ -56,12 +56,28 @@ html[data-theme="dark"] {
   --border: color-mix(in oklab, var(--text) 80%, black);
   --accent: #7180FF;
 
+  /* Softer top gradient for dark mode (muted / pastel) */
+  --top-gradient: linear-gradient(
+    90deg,
+    #8fd7cf 0%,
+    #b9d9a6 20%,
+    #e6a29a 35%,
+    #b9b2b2 65%,
+    #9aa7ff 95%,
+    #8fd7cf 100%
+  );
+
   --card-hover: color-mix(in oklab, var(--accent) 28%, var(--card));
   --field-bg: rgba(255, 255, 255, 0.06);
   --field-bg-focus: rgba(255, 255, 255, 0.12);
 
-  /* Keep the bottom nav colors the same as the light theme so the bar doesn't invert */
-  /* (do not override --nav-* variables here) */
+  /* Bottom nav: inverted for dark mode (light bar, dark text), but avoid pure white */
+  --nav-bg: #bdbab2;
+  --nav-fg: #0b0b0b;
+  --nav-border: #0b0b0b;
+  --nav-hover-bg: rgba(11, 11, 11, 0.08);
+  --nav-active-bg: #0b0b0b;
+  --nav-active-fg: #bdbab2;
 }
 
 html {

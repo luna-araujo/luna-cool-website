@@ -1,11 +1,13 @@
 .project-card {
   display: flex;
   flex-direction: column;
-  border-radius: 0.5rem;
+  border-radius: 0rem;
   background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: 0 1px 3px 0 color-mix(in oklab, var(--text) 10%, transparent);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 1px 3px 0 color-mix(in oklab, var(--text) 10%, transparent),
+    inset 0 0 0 0 var(--accent);
+  transition: box-shadow 0.2s ease;
   text-decoration: none;
   color: inherit;
   padding: 1rem;
@@ -14,8 +16,15 @@
 }
 
 .project-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px 0 color-mix(in oklab, var(--text) 18%, transparent);
+  box-shadow:
+    0 1px 3px 0 color-mix(in oklab, var(--text) 10%, transparent),
+    inset 0 0 0 4px var(--accent);
+}
+
+.project-card:focus-visible {
+  box-shadow:
+    0 1px 3px 0 color-mix(in oklab, var(--text) 10%, transparent),
+    inset 0 0 0 4px var(--accent);
 }
 
 .project-card img {
