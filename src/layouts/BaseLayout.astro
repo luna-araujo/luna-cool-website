@@ -28,6 +28,7 @@ const isActive = (path: string) => {
           "light",
           "light-rosepine",
           "dark",
+          "dark-reference",
           "dark-legacy",
           "dark-gruvbox",
           "dark-tokyonight",
@@ -49,7 +50,7 @@ const isActive = (path: string) => {
           }
         })();
 
-        const theme = saved && themes.has(saved) ? saved : (systemPrefersDark ? "dark" : "light");
+        const theme = saved && themes.has(saved) ? saved : (systemPrefersDark ? "dark-reference" : "light");
         document.documentElement.dataset.theme = theme;
       })();
     </script>

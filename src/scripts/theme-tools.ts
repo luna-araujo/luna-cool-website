@@ -3,6 +3,7 @@ const themes = [
   "light",
   "light-rosepine",
   "dark",
+  "dark-reference",
   "dark-legacy",
   "dark-gruvbox",
   "dark-tokyonight",
@@ -16,7 +17,7 @@ const isValidTheme = (v: unknown): v is ThemeId =>
 const getSystemTheme = (): ThemeId => {
   try {
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
+      ? "dark-reference"
       : "light";
   } catch {
     return "light";
@@ -81,7 +82,7 @@ const toggleButton = document.getElementById("theme-toggle");
 if (toggleButton) {
   toggleButton.addEventListener("click", () => {
     const current = getCurrentTheme();
-    setTheme(current === "light" ? "dark" : "light", { persist: true });
+    setTheme(current === "light" ? "dark-reference" : "light", { persist: true });
   });
 }
 
@@ -101,6 +102,7 @@ if (import.meta.env.DEV) {
   const labelFor = (t: string) => {
     if (t === "light") return "Light";
     if (t === "light-rosepine") return "Light (Rosé Pine)";
+    if (t === "dark-reference") return "Dark (Reference)";
     if (t === "dark") return "Dark (Mocha)";
     if (t === "dark-legacy") return "Dark (Legacy)";
     if (t === "dark-gruvbox") return "Dark (Gruvbox)";
