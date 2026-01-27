@@ -15,6 +15,10 @@
   width: var(--w, 420px);
   transform: translate3d(var(--x, 0px), var(--y, 0px), 0);
 
+  /* Per-card accent comes from inline styles via --card-accent-base.
+     We derive the actual --card-accent so we can adjust it for dark mode. */
+  --card-accent: var(--card-accent-base, var(--accent));
+
   background: var(--bg);
   border: 2px solid var(--card-accent, var(--accent));
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
@@ -138,4 +142,20 @@
   .about-card__drag {
     display: none;
   }
+}
+
+/* Dark mode: keep accent borders/buttons, but use readable text on dark bg */
+html[data-theme="dark"] .about-card {
+  /* Lighten each card's own accent for better contrast on dark backgrounds */
+  --card-accent: color-mix(in oklab, var(--card-accent-base, var(--accent)) 65%, white);
+}
+
+html[data-theme="dark"] .about-card__body,
+html[data-theme="dark"] .about-card__text {
+  color: var(--card-accent, var(--accent));
+}
+
+html[data-theme="dark"] .about-card__toggle {
+  /* Keep button readable when accent is light */
+  color: var(--bg);
 }
