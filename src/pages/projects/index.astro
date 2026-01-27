@@ -53,8 +53,8 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
   <div class="carousel-wrapper">
     <!-- Previous Button -->
     <button id="prev-btn" class="nav-btn" aria-label="Previous project">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-arrow rotate-left">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
       </svg>
     </button>
 
@@ -82,8 +82,8 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
 
     <!-- Next Button -->
     <button id="next-btn" class="nav-btn" aria-label="Next project">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-arrow rotate-right">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
       </svg>
     </button>
   </div>
@@ -101,8 +101,8 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
           {item.slides.length > 0 ? (
             <div class="gallery-slideshow" data-slides={JSON.stringify(item.slides)}>
                <button class="gallery-ctrl-btn prev" aria-label="Previous image" hidden={item.slides.length <= 1}>
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 icon-arrow rotate-left">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
                  </svg>
                </button>
                
@@ -114,8 +114,8 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
                />
                
                <button class="gallery-ctrl-btn next" aria-label="Next image" hidden={item.slides.length <= 1}>
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 icon-arrow rotate-right">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
                  </svg>
                </button>
 

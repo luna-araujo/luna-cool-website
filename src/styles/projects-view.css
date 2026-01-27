@@ -384,3 +384,12 @@
 .hidden {
     display: none !important;
 }
+
+/* Icon rotation helpers for thin up-arrow icon */
+.icon-arrow {
+  display: inline-block;
+  vertical-align: middle;
+  transform-origin: center;
+}
+.rotate-left { transform: rotate(-90deg); }
+.rotate-right { transform: rotate(90deg); }

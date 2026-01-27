@@ -17,6 +17,18 @@
   --border: #1b1515;
   --accent: #4101f6;
 
+  --card-hover: #cff665;
+  --field-bg: rgba(255, 255, 255, 0.25);
+  --field-bg-focus: rgba(255, 255, 255, 0.45);
+
+  /* Bottom nav colors (dark bar in light theme) */
+  --nav-bg: #0b0b0b;
+  --nav-fg: #e9e8e5;
+  --nav-border: #e9e8e5;
+  --nav-hover-bg: rgba(233, 232, 229, 0.12);
+  --nav-active-bg: #e9e8e5;
+  --nav-active-fg: #0b0b0b;
+
   --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
@@ -32,6 +44,33 @@
 
   --cursor-gradient: linear-gradient(135deg, #4101f6, #ff4733);
   --bottom-nav-height: 72px;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Dark mode derived from the light theme, with an off-black background */
+  --bg: #0e0e10;
+  --text: #e9e8e5;
+  --muted: color-mix(in oklab, var(--text) 70%, black);
+  --card: #17171a;
+  --border: color-mix(in oklab, var(--text) 80%, black);
+  --accent: #9cf0e3;
+
+  --card-hover: color-mix(in oklab, var(--accent) 28%, var(--card));
+  --field-bg: rgba(255, 255, 255, 0.06);
+  --field-bg-focus: rgba(255, 255, 255, 0.12);
+
+  /* Inverted bottom nav in dark theme (light bar on off-black page) */
+  --nav-bg: #e9e8e5;
+  --nav-fg: #0b0b0b;
+  --nav-border: #0b0b0b;
+  --nav-hover-bg: rgba(11, 11, 11, 0.10);
+  --nav-active-bg: #0b0b0b;
+  --nav-active-fg: #e9e8e5;
+
+  /* Keep the brand gradients readable on dark */
+  --cursor-gradient: linear-gradient(135deg, #9cf0e3, #4101f6);
 }
 
 html {
@@ -110,7 +149,7 @@ body {
   right: 0;
   bottom: 0;
   height: var(--bottom-nav-height);
-  background: #0b0b0b;
+  background: var(--nav-bg);
   z-index: 1;
 }
 
@@ -137,8 +176,8 @@ body {
   font-family: var(--font-mono);
   font-size: 0.95rem;
   letter-spacing: 0.02em;
-  color: #e9e8e5;
-  border: 2px solid #e9e8e5;
+  color: var(--nav-fg);
+  border: 2px solid var(--nav-border);
   border-top: none;
   padding: 12px 22px;
   text-decoration: none;
@@ -151,12 +190,42 @@ body {
 }
 
 .bottom-nav__link:hover {
-  background: rgba(233, 232, 229, 0.12);
+  background: var(--nav-hover-bg);
 }
 
 .bottom-nav__link.is-active {
-  background: #e9e8e5;
-  color: #0b0b0b;
+  background: var(--nav-active-bg);
+  color: var(--nav-active-fg);
+}
+
+.bottom-nav__theme-toggle {
+  margin-left: auto;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--nav-border);
+  border-top: none;
+  background: transparent;
+  color: var(--nav-fg);
+  border-radius: 0px;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.bottom-nav__theme-toggle:hover {
+  background: var(--nav-hover-bg);
+}
+
+.bottom-nav__theme-toggle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.bottom-nav__theme-toggle i {
+  font-size: 18px;
+  line-height: 1;
 }
 
 @media (max-width: 520px) {
@@ -176,5 +245,12 @@ body {
     min-width: 0;
     flex: 1 1 auto;
     padding: 10px 14px;
+  }
+
+  .bottom-nav__theme-toggle {
+    margin-left: 0;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
   }
 }
