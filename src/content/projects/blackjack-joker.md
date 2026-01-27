@@ -1,7 +1,7 @@
 ---
 title: "Blackjack Joker"
-summary: "Blackjack in Development"
-role: "Designer / Developer"
+summary: "Table Game"
+role: "Developer"
 year: "2026"
 image: "/images/projects/blackjack-joker/logo.png"
 ---

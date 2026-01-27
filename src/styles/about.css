@@ -2,6 +2,7 @@
 
 .about-stage {
   position: relative;
+  z-index: 0;
   min-height: calc(100vh - 24px - var(--bottom-nav-height));
   padding: 24px;
   overflow: hidden;

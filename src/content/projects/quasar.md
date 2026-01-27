@@ -1,10 +1,9 @@
 ---
 title: Quasar
-slug: quasar
 year: "2021"
 image: /images/projects/quasar/logo.png
-summary: Bullet Hell Space Opera
-role: Game Discovery
+summary: Bullet Hell
+role: Developer / Game Designer
 link: https://store.steampowered.com/app/1470350/Quasar/
 ---
 

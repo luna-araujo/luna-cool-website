@@ -1,7 +1,7 @@
 ---
 title: "Pablo o Pombo"
 summary: "Adventure Game"
-role: "Developer"
+role: "Project Lead / Designer / Developer"
 year: "2023"
 image: "/images/projects/pablo-o-pombo/logo.png"
 link: "https://hoff22.itch.io/pablo-o-pombo"

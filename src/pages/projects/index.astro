@@ -98,6 +98,10 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       <div class="modal-content-grid">
         <!-- Left Column: Slideshow -->
         <div class="modal-media-col" id={`gallery-${item.slug}`}>
+          <div class="modal-media-header">
+            <h2 class="modal-title">{item.data.title}</h2>
+          </div>
+
           {item.slides.length > 0 ? (
             <div class="gallery-slideshow" data-slides={JSON.stringify(item.slides)}>
                <button class="gallery-ctrl-btn prev" aria-label="Previous image" hidden={item.slides.length <= 1}>
@@ -128,18 +132,21 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
                No Image
             </div>
           )}
+
+          {item.data.year ? (
+            <div class="modal-media-footer">
+              <span class="modal-media-date">{item.data.year}</span>
+            </div>
+          ) : null}
         </div>
 
         <!-- Right Column: Text Content -->
         <div class="modal-info-col">
-          <div class="modal-header">
-            <h2 class="modal-title">{item.data.title}</h2>
+          {item.data.role && (
             <div class="modal-meta-row">
-              {item.data.role && <span class="meta-tag">{item.data.role.toUpperCase()}</span>}
-              <span class="meta-year">{item.data.year}</span>
+              <span class="meta-tag">{item.data.role.toUpperCase()}</span>
             </div>
-            <div class="separator"></div>
-          </div>
+          )}
           
           <div class="prose prose-invert max-w-none modal-description">
             <item.Content />
@@ -177,6 +184,13 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
   const track = document.getElementById('track');
   const nextBtn = document.getElementById('next-btn');
   const prevBtn = document.getElementById('prev-btn');
+
+  const useNativeScrollCarousel = window.matchMedia('(max-width: 640px)').matches;
+  if (useNativeScrollCarousel) {
+    // On mobile: use native horizontal scrolling + scroll-snap (CSS).
+    // The JS carousel logic below rearranges DOM nodes and animates transforms,
+    // which conflicts with natural scrolling.
+  } else {
 
   let isAnimating = false;
 
@@ -227,15 +241,30 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
     track.addEventListener('transitionend', transitionEnd);
   };
 
-  if (nextBtn && prevBtn) {
-    nextBtn.addEventListener('click', moveNext);
-    prevBtn.addEventListener('click', movePrev);
+    if (nextBtn && prevBtn) {
+      nextBtn.addEventListener('click', moveNext);
+      prevBtn.addEventListener('click', movePrev);
+    }
   }
 
   // --- Modal Logic ---
   const cards = document.querySelectorAll('.project-card');
   const modals = document.querySelectorAll('.project-modal');
   const closeButtons = document.querySelectorAll('.modal-close-btn');
+
+  const syncModalHeights = (modal) => {
+      if (!modal) return;
+      const mediaCol = modal.querySelector('.modal-media-col');
+      if (!mediaCol) return;
+
+      // Wait for layout (aspect-ratio sizing) to settle.
+      requestAnimationFrame(() => {
+        const height = mediaCol.getBoundingClientRect().height;
+        if (height && Number.isFinite(height)) {
+          modal.style.setProperty('--modal-left-col-height', `${Math.round(height)}px`);
+        }
+      });
+  };
   
   const openModal = (modal, updateHistory = true) => {
       document.body.style.overflow = 'hidden';
@@ -247,6 +276,8 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       // Reset animations/visibility
       modal.style.visibility = 'visible';
       modal.style.opacity = '1';
+
+      syncModalHeights(modal);
 
       if (updateHistory) {
          const slug = modal.id.replace('modal-', '');
@@ -269,6 +300,10 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
          history.pushState(null, '', window.location.pathname);
       }
   };
+
+  window.addEventListener('resize', () => {
+      document.querySelectorAll('.project-modal[open]').forEach(m => syncModalHeights(m));
+  });
 
   cards.forEach(card => {
       card.addEventListener('click', (e) => {
