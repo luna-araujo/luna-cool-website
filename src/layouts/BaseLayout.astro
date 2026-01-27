@@ -1,5 +1,7 @@
 ---
+import "../styles/themes.css";
 import "../styles/global.css";
+import themeToolsUrl from "../scripts/theme-tools.ts?url";
 
 const { title = "Luna Araújo", description = "Personal website" } = Astro.props;
 const basePath = import.meta.env.BASE_URL;
@@ -22,6 +24,15 @@ const isActive = (path: string) => {
     <script>
       (() => {
         const storageKey = "luna:theme";
+        const themes = new Set([
+          "light",
+          "light-rosepine",
+          "dark",
+          "dark-legacy",
+          "dark-gruvbox",
+          "dark-tokyonight",
+          "dark-rosepine",
+        ]);
         const saved = (() => {
           try {
             return localStorage.getItem(storageKey);
@@ -38,7 +49,7 @@ const isActive = (path: string) => {
           }
         })();
 
-        const theme = saved === "light" || saved === "dark" ? saved : (systemPrefersDark ? "dark" : "light");
+        const theme = saved && themes.has(saved) ? saved : (systemPrefersDark ? "dark" : "light");
         document.documentElement.dataset.theme = theme;
       })();
     </script>
@@ -186,72 +197,6 @@ const isActive = (path: string) => {
       </div>
     </nav>
 
-    <script>
-      (() => {
-        const storageKey = "luna:theme";
-
-        const getSystemTheme = () =>
-          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-
-        const getSavedTheme = () => {
-          try {
-            const v = localStorage.getItem(storageKey);
-            return v === "light" || v === "dark" ? v : null;
-          } catch {
-            return null;
-          }
-        };
-
-        const setTheme = (theme, { persist } = { persist: true }) => {
-          document.documentElement.dataset.theme = theme;
-          if (persist) {
-            try {
-              localStorage.setItem(storageKey, theme);
-            } catch {}
-          }
-          syncToggleUi(theme);
-        };
-
-        const toggleButton = document.getElementById("theme-toggle");
-        const syncToggleUi = (theme) => {
-          if (!toggleButton) return;
-          const icon = toggleButton.querySelector("i");
-          if (icon) {
-            icon.classList.remove("fa-moon", "fa-sun");
-            icon.classList.add(theme === "dark" ? "fa-moon" : "fa-sun");
-          }
-          toggleButton.setAttribute(
-            "aria-label",
-            theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-          );
-          toggleButton.setAttribute(
-            "title",
-            theme === "dark" ? "Dark mode" : "Light mode"
-          );
-        };
-
-        // Ensure the icon matches the theme picked by the early <head> script.
-        const initialTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-        syncToggleUi(initialTheme);
-
-        if (toggleButton) {
-          toggleButton.addEventListener("click", () => {
-            const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-            setTheme(current === "dark" ? "light" : "dark", { persist: true });
-          });
-        }
-
-        // Follow system theme only if the user hasn't explicitly chosen one.
-        try {
-          const mql = window.matchMedia("(prefers-color-scheme: dark)");
-          mql.addEventListener("change", () => {
-            if (getSavedTheme() !== null) return;
-            setTheme(getSystemTheme(), { persist: false });
-          });
-        } catch {}
-      })();
-    </script>
+    <script type="module" src={themeToolsUrl}></script>
   </body>
 </html>

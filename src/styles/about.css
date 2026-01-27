@@ -145,17 +145,17 @@
 }
 
 /* Dark mode: keep accent borders/buttons, but use readable text on dark bg */
-html[data-theme="dark"] .about-card {
+html[data-theme^="dark"] .about-card {
   /* Lighten each card's own accent for better contrast on dark backgrounds */
   --card-accent: color-mix(in oklab, var(--card-accent-base, var(--accent)) 65%, white);
 }
 
-html[data-theme="dark"] .about-card__body,
-html[data-theme="dark"] .about-card__text {
+html[data-theme^="dark"] .about-card__body,
+html[data-theme^="dark"] .about-card__text {
   color: var(--card-accent, var(--accent));
 }
 
-html[data-theme="dark"] .about-card__toggle {
+html[data-theme^="dark"] .about-card__toggle {
   /* Keep button readable when accent is light */
   color: var(--bg);
 }

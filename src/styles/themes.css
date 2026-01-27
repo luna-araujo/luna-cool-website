@@ -1,0 +1,252 @@
+/* Theme variables live here so we can swap palettes cleanly. */
+
+:root {
+  /* Reference light theme (gradient_and_fonts_reference.jpeg) */
+  --bg: #e9e8e5;
+  --text: #1b1515;
+  --muted: color-mix(in oklab, var(--text) 70%, white);
+  --card: color-mix(in oklab, var(--bg) 80%, white);
+  --border: #1b1515;
+  --accent: #4101f6;
+  --accent-alt: #ff4733;
+
+  --card-hover: #cff665;
+  --field-bg: rgba(255, 255, 255, 0.25);
+  --field-bg-focus: rgba(255, 255, 255, 0.45);
+
+  /* Bottom nav colors (dark bar in light theme) */
+  --nav-bg: #0b0b0b;
+  --nav-fg: #e9e8e5;
+  --nav-border: #e9e8e5;
+  --nav-hover-bg: rgba(233, 232, 229, 0.12);
+  --nav-active-bg: #e9e8e5;
+  --nav-active-fg: #0b0b0b;
+
+  --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --top-gradient: linear-gradient(
+    90deg,
+    #9cf0e3 0%,
+    #cff665 20%,
+    #ff4733 35%,
+    #1b1515 65%,
+    #4101f6 95%,
+    #9cf0e3 100%
+  );
+
+  --bottom-nav-height: 72px;
+}
+
+/* Rosé Pine Dawn (light) */
+html[data-theme="light-rosepine"] {
+  color-scheme: light;
+
+  --bg: #faf4ed;
+  --text: #575279;
+  --muted: #797593;
+  --card: #fffaf3;
+  --border: #cecacd;
+  --accent: #d7827e; /* rose */
+  --accent-alt: #286983; /* foam (blue/teal-ish complement) */
+
+  --card-hover: color-mix(in oklab, var(--accent) 16%, var(--card));
+  --field-bg: rgba(255, 255, 255, 0.35);
+  --field-bg-focus: rgba(255, 255, 255, 0.55);
+
+  /* Bottom nav: keep the light theme "dark bar" feel, but in Rosé Pine tones */
+  --nav-bg: #232136;
+  --nav-fg: #faf4ed;
+  --nav-border: #faf4ed;
+  --nav-hover-bg: rgba(250, 244, 237, 0.14);
+  --nav-active-bg: #faf4ed;
+  --nav-active-fg: #232136;
+
+  --top-gradient: linear-gradient(
+    90deg,
+    #9ccfd8 0%,
+    #f6c177 20%,
+    #d7827e 35%,
+    #575279 65%,
+    #907aa9 95%,
+    #9ccfd8 100%
+  );
+}
+
+/* Default dark: Catppuccin Mocha base palette */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #1e1e2e; /* base */
+  --text: #cdd6f4; /* text */
+  --muted: #a6adc8; /* subtext0 */
+  --card: #313244; /* surface0 */
+  --border: #6c7086; /* overlay0 */
+  --accent: #89b4fa; /* blue */
+  --accent-alt: #fab387; /* peach (opposite/warm counterpoint) */
+
+  /* Top gradient strip: teal → lime → coral → neutral → violet → teal */
+  --top-gradient: linear-gradient(
+    90deg,
+    #8bd5ca 0%,
+    #c9f27f 20%,
+    #ff8a78 35%,
+    #8a8aa3 65%,
+    #a897ff 95%,
+    #8bd5ca 100%
+  );
+
+  --card-hover: color-mix(in oklab, var(--accent) 22%, var(--card));
+  --field-bg: rgba(205, 214, 244, 0.06); /* text @ ~6% */
+  --field-bg-focus: rgba(205, 214, 244, 0.12); /* text @ ~12% */
+
+  /* Bottom nav: inverted in dark mode, using Catppuccin surfaces (no pure white) */
+  --nav-bg: #6c7086; /* overlay0 (lighter for contrast) */
+  --nav-fg: #1e1e2e; /* base */
+  --nav-border: #1e1e2e; /* base */
+  --nav-hover-bg: rgba(17, 17, 27, 0.10);
+  --nav-active-bg: #1e1e2e; /* base */
+  --nav-active-fg: #6c7086; /* overlay0 */
+}
+
+/* Legacy dark: pre-Catppuccin dark theme (kept for testing) */
+html[data-theme="dark-legacy"] {
+  color-scheme: dark;
+
+  --bg: #0b0b0b;
+  --text: #e9e8e5;
+  --muted: color-mix(in oklab, var(--text) 70%, black);
+  --card: #17171a;
+  --border: color-mix(in oklab, var(--text) 80%, black);
+  --accent: #7180ff;
+  --accent-alt: #ff9f5a;
+
+  --card-hover: color-mix(in oklab, var(--accent) 28%, var(--card));
+  --field-bg: rgba(255, 255, 255, 0.06);
+  --field-bg-focus: rgba(255, 255, 255, 0.12);
+
+
+  /* Softer top gradient for dark mode (muted / pastel) */
+  --top-gradient: linear-gradient(
+    90deg,
+    #8fd7cf 0%,
+    #b9d9a6 20%,
+    #e6a29a 35%,
+    #b9b2b2 65%,
+    #9aa7ff 95%,
+    #8fd7cf 100%
+  );
+
+  /* Bottom nav: inverted for dark mode (light bar, dark text), but avoid pure white */
+  --nav-bg: #bdbab2;
+  --nav-fg: #0b0b0b;
+  --nav-border: #0b0b0b;
+  --nav-hover-bg: rgba(11, 11, 11, 0.08);
+  --nav-active-bg: #0b0b0b;
+  --nav-active-fg: #bdbab2;
+}
+
+/* Gruvbox dark (soft, warm) */
+html[data-theme="dark-gruvbox"] {
+  color-scheme: dark;
+
+  --bg: #282828;
+  --text: #ebdbb2;
+  --muted: #a89984;
+  --card: #32302f;
+  --border: #504945;
+  --accent: #83a598; /* aqua */
+  --accent-alt: #fe8019; /* orange */
+
+  --top-gradient: linear-gradient(
+    90deg,
+    #83a598 0%,
+    #b8bb26 20%,
+    #fe8019 35%,
+    #a89984 65%,
+    #d3869b 95%,
+    #83a598 100%
+  );
+
+  --card-hover: color-mix(in oklab, var(--accent) 22%, var(--card));
+  --field-bg: rgba(235, 219, 178, 0.06);
+  --field-bg-focus: rgba(235, 219, 178, 0.12);
+
+  /* Bottom nav: inverted (lighter bar) */
+  --nav-bg: #a89984;
+  --nav-fg: #282828;
+  --nav-border: #282828;
+  --nav-hover-bg: rgba(40, 40, 40, 0.10);
+  --nav-active-bg: #282828;
+  --nav-active-fg: #a89984;
+}
+
+/* Tokyo Night (storm) */
+html[data-theme="dark-tokyonight"] {
+  color-scheme: dark;
+
+  --bg: #1a1b26;
+  --text: #c0caf5;
+  --muted: #a9b1d6;
+  --card: #24283b;
+  --border: #414868;
+  --accent: #7aa2f7;
+  --accent-alt: #ff9e64;
+
+  --top-gradient: linear-gradient(
+    90deg,
+    #7dcfff 0%,
+    #9ece6a 20%,
+    #ff9e64 35%,
+    #565f89 65%,
+    #bb9af7 95%,
+    #7dcfff 100%
+  );
+
+  --card-hover: color-mix(in oklab, var(--accent) 22%, var(--card));
+  --field-bg: rgba(192, 202, 245, 0.06);
+  --field-bg-focus: rgba(192, 202, 245, 0.12);
+
+  /* Bottom nav: inverted (lighter bar) */
+  --nav-bg: #565f89;
+  --nav-fg: #1a1b26;
+  --nav-border: #1a1b26;
+  --nav-hover-bg: rgba(26, 27, 38, 0.10);
+  --nav-active-bg: #1a1b26;
+  --nav-active-fg: #565f89;
+}
+
+/* Rosé Pine */
+html[data-theme="dark-rosepine"] {
+  color-scheme: dark;
+
+  --bg: #191724;
+  --text: #e0def4;
+  --muted: #908caa;
+  --card: #1f1d2e;
+  --border: #403d52;
+  --accent: #c4a7e7; /* iris */
+  --accent-alt: #f6c177;
+
+  --top-gradient: linear-gradient(
+    90deg,
+    #9ccfd8 0%,
+    #f6c177 20%,
+    #eb6f92 35%,
+    #908caa 65%,
+    #c4a7e7 95%,
+    #9ccfd8 100%
+  );
+
+  --card-hover: color-mix(in oklab, var(--accent) 22%, var(--card));
+  --field-bg: rgba(224, 222, 244, 0.06);
+  --field-bg-focus: rgba(224, 222, 244, 0.12);
+
+  /* Bottom nav: inverted (lighter bar) */
+  --nav-bg: #908caa;
+  --nav-fg: #191724;
+  --nav-border: #191724;
+  --nav-hover-bg: rgba(25, 23, 36, 0.10);
+  --nav-active-bg: #191724;
+  --nav-active-fg: #908caa;
+}

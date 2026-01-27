@@ -5,7 +5,7 @@ import "../styles/about.css";
 type AboutCard = {
   id: string;
   title: string;
-  accent: string;
+  accent: "accent" | "accent-alt";
   x: number;
   y: number;
   w: number;
@@ -17,11 +17,14 @@ type AboutCard = {
 
 const basePath = import.meta.env.BASE_URL;
 
+const cssAccentFor = (accent: AboutCard["accent"]) =>
+  accent === "accent" ? "var(--accent)" : "var(--accent-alt)";
+
 const cards: AboutCard[] = [
   {
     id: "who",
     title: "Who am I?",
-    accent: "#4101f6",
+    accent: "accent",
     x: 84,
     y: 120,
     w: 460,
@@ -36,7 +39,7 @@ const cards: AboutCard[] = [
   {
     id: "workwithme",
     title: "What's like working with me",
-    accent: "#4101f6",
+    accent: "accent",
     x: 700,
     y: 78,
     w: 520,
@@ -50,7 +53,7 @@ const cards: AboutCard[] = [
   {
     id: "skills",
     title: "Skills",
-    accent: "#ff4733",
+    accent: "accent-alt",
     x: 590,
     y: 190,
     w: 420,
@@ -61,7 +64,7 @@ const cards: AboutCard[] = [
   {
     id: "softskills",
     title: "Soft skills",
-    accent: "#ff4733",
+    accent: "accent-alt",
     x: 360,
     y: 520,
     w: 360,
@@ -72,7 +75,7 @@ const cards: AboutCard[] = [
   {
     id: "tools",
     title: "Tools and softwares",
-    accent: "#ff4733",
+    accent: "accent-alt",
     x: 630,
     y: 420,
     w: 520,
@@ -83,7 +86,7 @@ const cards: AboutCard[] = [
   {
     id: "experience",
     title: "My experiences",
-    accent: "#4101f6",
+    accent: "accent",
     x: 980,
     y: 310,
     w: 320,
@@ -97,7 +100,7 @@ const cards: AboutCard[] = [
   {
     id: "games",
     title: "Games I love",
-    accent: "#ff4733",
+    accent: "accent-alt",
     x: 1090,
     y: 540,
     w: 300,
@@ -115,7 +118,7 @@ const cards: AboutCard[] = [
         data-about-card
         data-id={card.id}
         data-open={card.open ? "true" : "false"}
-        style={`--x:${card.x}px; --y:${card.y}px; --w:${card.w}px; --card-accent-base:${card.accent}; z-index: 1;`}
+        style={`--x:${card.x}px; --y:${card.y}px; --w:${card.w}px; --card-accent-base:${cssAccentFor(card.accent)}; z-index: 1;`}
         tabindex="0"
       >
         <header class="about-card__header">
