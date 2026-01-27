@@ -97,7 +97,8 @@ body {
   gap: 14px;
   padding-left: 12px;
   padding-right: 24px;
-  max-width: 1152px;
+  /* Let the inner container span the full bar so the theme toggle can sit on the far right */
+  max-width: none;
   margin: 0;
 }
 
@@ -209,10 +210,7 @@ body {
   }
 
   .bottom-nav__theme-toggle {
-    margin-left: 0;
-    flex: 0 0 auto;
-    width: 42px;
-    height: 42px;
+    display: none;
   }
 }
 

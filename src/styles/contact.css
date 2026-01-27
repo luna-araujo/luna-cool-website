@@ -9,6 +9,8 @@
 
 .contact-card {
   width: min(860px, 100%);
+  /* Match About cards: use a base accent token we can adjust per theme */
+  --card-accent: var(--card-accent-base, var(--accent));
   background: var(--bg);
   border: 2px solid var(--card-accent, var(--accent));
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
@@ -77,4 +79,15 @@
   .contact-stage {
     padding: 18px 16px;
   }
+}
+
+/* Dark mode: keep accent borders/buttons, but use readable text on dark bg */
+html[data-theme^="dark"] .contact-card {
+  /* Lighten the contact accent for better contrast on dark backgrounds */
+  --card-accent: color-mix(in oklab, var(--card-accent-base, var(--accent)) 65%, white);
+}
+
+html[data-theme^="dark"] .contact-card__body,
+html[data-theme^="dark"] .contact-lead {
+  color: var(--card-accent, var(--accent));
 }

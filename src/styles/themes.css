@@ -141,7 +141,7 @@ html[data-theme="dark-reference"] {
     color-mix(in oklab, #9cf0e3 72%, var(--bg)) 0%,
     color-mix(in oklab, #cff665 72%, var(--bg)) 20%,
     color-mix(in oklab, #ff4733 72%, var(--bg)) 35%,
-    color-mix(in oklab, #e9e8e5 58%, var(--bg)) 65%,
+    color-mix(in oklab, #0f1012 58%, var(--bg)) 65%,
     color-mix(in oklab, #4101f6 72%, var(--bg)) 95%,
     color-mix(in oklab, #9cf0e3 72%, var(--bg)) 100%
   );
