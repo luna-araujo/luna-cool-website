@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Intro from "../content/home/index.md";
 ---
 <BaseLayout title="Luna Araújo — Home" description="Personal website">
   <section class="min-h-[68vh] pt-14 md:pt-24">
@@ -34,14 +35,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
             </svg>
           </div>
 
-          <p class="mt-10 max-w-[42ch] text-left text-[1.15rem] md:text-[1.25rem] leading-[1.75] text-[var(--text)]">
-            Hi, I'm <span class="font-semibold">Luna</span>. I'm a designer and developer specializing in
-            <span class="underline decoration-2 underline-offset-8">game development</span> and
-            <span class="underline decoration-2 underline-offset-8">interactive experiences</span>. Currently at Caleta Gaming,
-            I create visually appealing and mechanically engaging games—from <em class="italic">indie platformers</em>
-            to complex <em class="italic">video bingo systems</em>. I work with Unity, pixel art, and game design to
-            bring ideas to life.
-          </p>
+          <div class="mt-10 max-w-[42ch] text-left text-[1.15rem] md:text-[1.25rem] leading-[1.75] text-[var(--text)]">
+            <Intro />
+          </div>
         </div>
       </div>
     </div>
