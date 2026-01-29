@@ -223,7 +223,35 @@ const cards: AboutCard[] = [
             toggle.textContent = next ? "−" : "+";
 
             // Expansion changes card height; keep it inside the stage.
-            requestAnimationFrame(() => clampCardIntoStage(card));
+            requestAnimationFrame(() => {
+              clampCardIntoStage(card);
+
+              // Scroll page to show expanded card content
+              if (next) {
+                setTimeout(() => {
+                  const cardBody = card.querySelector<HTMLElement>(".about-card__body");
+                  if (cardBody) {
+                    const bodyRect = cardBody.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+
+                    // Get bottom nav height from CSS variable
+                    const navHeightStr = getComputedStyle(document.documentElement).getPropertyValue("--bottom-nav-height").trim();
+                    const navHeight = parseFloat(navHeightStr) || 0;
+                    const availableHeight = viewportHeight - navHeight;
+
+                    // If card body bottom is below available viewport space, scroll to show full content
+                    if (bodyRect.bottom > availableHeight) {
+                      const scrollAmount = bodyRect.bottom - availableHeight + 20; // 20px margin
+                      window.scrollBy({ top: scrollAmount, behavior: "smooth" });
+                    }
+                    // If card body is above viewport, scroll up to show it
+                    else if (bodyRect.top < 0) {
+                      window.scrollBy({ top: bodyRect.top - 20, behavior: "smooth" });
+                    }
+                  }
+                }, 50);
+              }
+            });
           });
         }
 
