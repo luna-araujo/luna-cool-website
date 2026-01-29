@@ -1,7 +1,7 @@
 /* Contact page: match About card aesthetic */
 
 .contact-stage {
-  min-height: calc(100vh - 24px - var(--bottom-nav-height));
+  min-height: calc(100dvh - 24px - var(--bottom-nav-height));
   padding: 28px 24px;
   display: grid;
   place-items: start center;
@@ -134,7 +134,7 @@ html[data-theme^="dark"] .contact-lead {
   main.container {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 24px - var(--bottom-nav-height));
+    min-height: calc(100dvh - 24px - var(--bottom-nav-height));
   }
 
   .contact-stage {
