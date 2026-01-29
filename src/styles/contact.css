@@ -79,6 +79,19 @@
   .contact-stage {
     padding: 18px 16px;
   }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .contact-link {
+    width: 100%;
+    max-width: 240px;
+    justify-content: center;
+  }
 }
 
 /* Dark mode: keep accent borders/buttons, but use readable text on dark bg */
