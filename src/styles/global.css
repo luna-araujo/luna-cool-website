@@ -86,6 +86,8 @@ body {
   height: var(--bottom-nav-height);
   background: var(--nav-bg);
   z-index: 50;
+  will-change: transform;
+  contain: layout style paint;
 }
 
 .bottom-nav__inner {
