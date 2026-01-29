@@ -377,10 +377,6 @@
     letter-spacing: 0.05em;
 }
 
-.meta-tag {
-    white-space: nowrap;
-}
-
 .separator {
     height: 1px;
     background: #222;
