@@ -62,10 +62,11 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
     <div class="viewport">
       <div class="track" id="track">
         {projects.map((item) => (
-          <button 
+          <button
             type="button"
             class="project-card carousel-item text-left cursor-pointer"
             data-target={`#modal-${item.slug}`}
+            data-href={basePath + `projects/${item.slug}`}
           >
             {item.data.image && (
               <img src={basePath + item.data.image.slice(1)} alt={item.data.title} />
@@ -333,9 +334,19 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       document.querySelectorAll('.project-modal[open]').forEach(m => syncModalHeights(m));
   });
 
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+
   cards.forEach(card => {
       card.addEventListener('click', (e) => {
           if (e.target.tagName === 'A') return; // let normal links work
+
+          // On mobile, navigate to detail page instead of opening modal
+          if (isMobile) {
+              const href = card.getAttribute('data-href');
+              if (href) window.location.href = href;
+              return;
+          }
+
           const targetId = card.getAttribute('data-target');
           const modal = document.querySelector(targetId);
           if (modal) openModal(modal, true);

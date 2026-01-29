@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
 
+import "../../styles/project-detail.css";
+
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
   return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
@@ -32,206 +34,163 @@ if (hasGallery) {
       })
       .map(file => basePath + `images/projects/${project.slug}/gallery/${file}`);
   } catch (e) {
-    // If we can't read the directory, set to empty array
     galleryImages = [];
   }
 }
 ---
 <BaseLayout title={`${project.data.title} — Luna Araújo`} description={project.data.summary}>
-  <article class="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
-    <div class="flex-1 space-y-6">
-      <header class="space-y-2">
-        <h1 class="text-3xl font-bold">{project.data.title}</h1>
-        <p class="text-sm text-[var(--muted)]">{project.data.role}</p>
-        <p class="text-sm text-[var(--muted)]">{project.data.year}</p>
-      </header>
-      <div class="prose max-w-none prose-headings:text-[var(--text)] prose-p:text-[var(--text)]">
+  <article class="project-detail">
+    {project.data.image && (
+      <div class="project-detail__mobileCover">
+        <img
+          class="project-detail__coverImage"
+          src={basePath + project.data.image.slice(1)}
+          alt={project.data.title}
+        />
+      </div>
+    )}
+
+    <header class="project-detail__header">
+      <h1 class="project-detail__title">{project.data.title}</h1>
+      <div class="project-detail__meta">
+        {project.data.summary && <p class="project-detail__summary">{project.data.summary}</p>}
+        {project.data.role && <p class="project-detail__role">{project.data.role}</p>}
+        {project.data.year && <p class="project-detail__year">{project.data.year}</p>}
+      </div>
+    </header>
+
+    <div class="project-detail__body">
+      {project.data.image && (
+        <div class="project-detail__cover">
+          <img
+            class="project-detail__coverImage"
+            src={basePath + project.data.image.slice(1)}
+            alt={project.data.title}
+          />
+          {project.data.link && (
+            <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-detail__link">
+              Visit Project <span>→</span>
+            </a>
+          )}
+        </div>
+      )}
+
+      <div class="project-detail__content prose max-w-none">
         <Content />
       </div>
-    </div>
-    <div class="flex-none md:w-1/3">
-      <img src={basePath + project.data.image.slice(1)} alt={project.data.title} class="rounded-lg shadow-md" />
-      {project.data.link && (
-        <a href={project.data.link} target="_blank" class="mt-4 block w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center">
-          Play
-        </a>
+
+      {hasGallery && galleryImages.length > 0 && (
+        <section class="project-detail__gallery">
+          <h2 class="project-detail__galleryTitle">Gallery</h2>
+          <div class="project-detail__galleryGrid">
+            {galleryImages.map((imageSrc, index) => (
+              <img
+                src={imageSrc}
+                alt={`${project.data.title} screenshot ${index + 1}`}
+                class="project-detail__galleryImage"
+                loading="lazy"
+                data-index={index}
+              />
+            ))}
+          </div>
+        </section>
       )}
+    </div>
+
+    <div class="project-detail__footer">
+      <a class="project-detail__back" href={basePath + "projects"}>
+        ← Back to Projects
+      </a>
     </div>
   </article>
 
-  {hasGallery && (
-  <!-- Gallery Section -->
-  <section id="gallery-section" class="mt-12">
-    <h2 class="text-2xl font-semibold mb-6">Gallery</h2>
-    <div class="relative">
-      <div id="carousel" class="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
-        {galleryImages.map((imageSrc, index) => (
-          <img
-            src={imageSrc}
-            alt={`${project.data.title} screenshot ${index + 1}`}
-            class="flex-none w-full md:w-[280px] rounded-lg shadow-md snap-center cursor-pointer hover:opacity-90 transition-opacity"
-            loading="lazy"
-            data-index={index}
-          />
-        ))}
-      </div>
-      <button
-        id="prev-btn"
-        class="absolute left-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg hidden"
-        aria-label="Previous image"
-      >
-        <svg class="w-6 h-6 icon-arrow rotate-left" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+  {hasGallery && galleryImages.length > 0 && (
+    <dialog id="lightbox" class="project-detail__lightbox">
+      <button id="lightbox-close" class="project-detail__lightboxClose" aria-label="Close">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      <button id="lightbox-prev" class="project-detail__lightboxNav project-detail__lightboxNav--prev" aria-label="Previous image">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" class="icon-arrow rotate-left">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
         </svg>
       </button>
-      <button
-        id="next-btn"
-        class="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--card)] border border-[var(--border)] rounded-full p-3 hover:bg-[var(--bg)] transition-colors shadow-lg hidden"
-        aria-label="Next image"
-      >
-        <svg class="w-6 h-6 icon-arrow rotate-right" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+      <img id="lightbox-img" class="project-detail__lightboxImage" src="" alt="Full size view" />
+      <button id="lightbox-next" class="project-detail__lightboxNav project-detail__lightboxNav--next" aria-label="Next image">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" class="icon-arrow rotate-right">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
         </svg>
       </button>
-    </div>
-  </section>
+    </dialog>
   )}
 
-  {hasGallery && (
-  <!-- Lightbox Modal -->
-  <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4">
-    <button
-      id="close-lightbox"
-      class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
-      aria-label="Close"
-    >
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-    </button>
-    <button
-      id="lightbox-prev"
-      class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
-      aria-label="Previous image"
-    >
-      <svg class="w-10 h-10 icon-arrow rotate-left" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
-      </svg>
-    </button>
-    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[90vh] object-contain" />
-    <button
-      id="lightbox-next"
-      class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
-      aria-label="Next image"
-    >
-      <svg class="w-10 h-10 icon-arrow rotate-right" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
-      </svg>
-    </button>
-  </div>
-  )}
+  {hasGallery && galleryImages.length > 0 && (
+    <script define:vars={{ galleryImages }}>
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeLightbox = document.getElementById('lightbox-close');
+      const lightboxPrev = document.getElementById('lightbox-prev');
+      const lightboxNext = document.getElementById('lightbox-next');
+      const galleryImagesEl = document.querySelectorAll('.project-detail__galleryImage');
 
-  {hasGallery && (
-  <script define:vars={{ galleryImages }}>
-    const carousel = document.getElementById('carousel');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeLightbox = document.getElementById('close-lightbox');
-    const lightboxPrev = document.getElementById('lightbox-prev');
-    const lightboxNext = document.getElementById('lightbox-next');
-    
-    let currentImageIndex = 0;
-    
-    // Check if carousel needs scrolling and update button visibility
-    function updateCarouselButtonVisibility() {
-      if (carousel && prevBtn && nextBtn) {
-        const isScrollable = carousel.scrollWidth > carousel.clientWidth;
-        if (isScrollable) {
-          prevBtn.classList.remove('hidden');
-          nextBtn.classList.remove('hidden');
+      let currentImageIndex = 0;
+
+      function updateLightboxButtons() {
+        if (galleryImages.length <= 1) {
+          lightboxPrev?.classList.add('hidden');
+          lightboxNext?.classList.add('hidden');
         } else {
-          prevBtn.classList.add('hidden');
-          nextBtn.classList.add('hidden');
+          lightboxPrev?.classList.remove('hidden');
+          lightboxNext?.classList.remove('hidden');
         }
       }
-    }
-    
-    // Carousel navigation
-    if (carousel && prevBtn && nextBtn) {
-      prevBtn.addEventListener('click', () => {
-        carousel.scrollBy({ left: -300, behavior: 'smooth' });
-      });
 
-      nextBtn.addEventListener('click', () => {
-        carousel.scrollBy({ left: 300, behavior: 'smooth' });
-      });
-      
-      // Check visibility on load and on resize
-      updateCarouselButtonVisibility();
-      window.addEventListener('resize', updateCarouselButtonVisibility);
-    }
-
-    // Open lightbox
-    const images = carousel?.querySelectorAll('img') || [];
-    images.forEach((img, index) => {
-      img.addEventListener('click', () => {
+      function showLightbox(imageSrc, index) {
         currentImageIndex = index;
-        showLightbox(galleryImages[currentImageIndex]);
+        lightboxImg.src = imageSrc;
+        lightbox.showModal();
+        document.body.style.overflow = 'hidden';
+        updateLightboxButtons();
+      }
+
+      function hideLightbox() {
+        lightbox.close();
+        document.body.style.overflow = '';
+      }
+
+      // Open lightbox on image click
+      galleryImagesEl.forEach((img, index) => {
+        img.addEventListener('click', () => {
+          showLightbox(galleryImages[index], index);
+        });
       });
-    });
 
-    function updateLightboxButtons() {
-      if (galleryImages.length <= 1) {
-        lightboxPrev?.classList.add('hidden');
-        lightboxNext?.classList.add('hidden');
-      } else {
-        lightboxPrev?.classList.remove('hidden');
-        lightboxNext?.classList.remove('hidden');
-      }
-    }
+      // Close lightbox
+      closeLightbox?.addEventListener('click', hideLightbox);
+      lightbox?.addEventListener('click', (e) => {
+        if (e.target === lightbox) hideLightbox();
+      });
 
-    function showLightbox(imageSrc) {
-      lightboxImg.src = imageSrc;
-      lightbox.classList.remove('hidden');
-      lightbox.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-      updateLightboxButtons();
-    }
+      // Lightbox navigation
+      lightboxPrev?.addEventListener('click', () => {
+        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+        lightboxImg.src = galleryImages[currentImageIndex];
+      });
 
-    function hideLightbox() {
-      lightbox.classList.add('hidden');
-      lightbox.classList.remove('flex');
-      document.body.style.overflow = '';
-    }
+      lightboxNext?.addEventListener('click', () => {
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+        lightboxImg.src = galleryImages[currentImageIndex];
+      });
 
-    // Close lightbox
-    closeLightbox?.addEventListener('click', hideLightbox);
-    lightbox?.addEventListener('click', (e) => {
-      if (e.target === lightbox) hideLightbox();
-    });
-
-    // Lightbox navigation
-    lightboxPrev?.addEventListener('click', () => {
-      currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-      lightboxImg.src = galleryImages[currentImageIndex];
-    });
-
-    lightboxNext?.addEventListener('click', () => {
-      currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-      lightboxImg.src = galleryImages[currentImageIndex];
-    });
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (!lightbox.classList.contains('hidden')) {
-        if (e.key === 'Escape') hideLightbox();
-        if (e.key === 'ArrowLeft') lightboxPrev?.click();
-        if (e.key === 'ArrowRight') lightboxNext?.click();
-      }
-    });
-  </script>
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.open) {
+          if (e.key === 'Escape') hideLightbox();
+          if (e.key === 'ArrowLeft') lightboxPrev?.click();
+          if (e.key === 'ArrowRight') lightboxNext?.click();
+        }
+      });
+    </script>
   )}
 </BaseLayout>
