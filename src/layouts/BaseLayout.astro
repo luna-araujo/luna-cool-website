@@ -19,35 +19,59 @@ const isActive = (path: string) => {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <script>
-      (() => {
-        const storageKey = "luna:theme";
-        const saved = (() => {
-          try {
-            const v = localStorage.getItem(storageKey);
-            return v === "light" || v === "dark" ? v : null;
-          } catch {
-            return null;
-          }
-        })();
+    <script is:inline>
+      (function() {
+        var LIGHT_BG = "#faf4ed";
+        var DARK_BG = "#191724";
+        var storageKey = "luna:theme";
+        var theme;
 
-        const systemPrefersDark = (() => {
-          try {
-            return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-          } catch {
-            return false;
-          }
-        })();
+        try {
+          var saved = localStorage.getItem(storageKey);
+          if (saved === "light" || saved === "dark") theme = saved;
+        } catch (e) {}
 
-        const theme = saved ?? (systemPrefersDark ? "dark" : "light");
-        const root = document.documentElement;
-        root.dataset.theme = theme;
+        if (!theme) {
+          try {
+            theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          } catch (e) {
+            theme = "light";
+          }
+        }
+
+        var root = document.documentElement;
+        root.setAttribute("data-theme", theme);
         root.style.colorScheme = theme;
-        root.style.background = theme === "dark" ? "#191724" : "#faf4ed";
+        root.style.background = theme === "dark" ? DARK_BG : LIGHT_BG;
       })();
     </script>
+    <style is:inline>
+      /* Critical CSS: theme variables needed before external CSS loads */
+      :root {
+        --bg: #faf4ed;
+        --nav-bg: #232136;
+        --nav-fg: #faf4ed;
+        --nav-border: #faf4ed;
+        --nav-hover-bg: rgba(250, 244, 237, 0.14);
+        --nav-active-bg: #faf4ed;
+        --nav-active-fg: #232136;
+      }
+      html[data-theme="dark"] {
+        --bg: #191724;
+        --nav-bg: #908caa;
+        --nav-fg: #191724;
+        --nav-border: #191724;
+        --nav-hover-bg: rgba(25, 23, 36, 0.10);
+        --nav-active-bg: #191724;
+        --nav-active-fg: #908caa;
+      }
+      .bottom-nav {
+        background: var(--nav-bg);
+      }
+    </style>
     <link rel="icon" href={basePath + "home-icon.svg"} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -43,9 +43,16 @@ const syncToggleUi = (theme: Theme) => {
   toggleButton.setAttribute("title", theme === "light" ? "Light mode" : "Dark mode");
 };
 
+const LIGHT_BG = "#faf4ed";
+const DARK_BG = "#191724";
+
 const setTheme = (theme: Theme, { persist = true }: { persist?: boolean } = {}) => {
   const safeTheme: Theme = isValidTheme(theme) ? theme : "light";
-  document.documentElement.dataset.theme = safeTheme;
+  const el = document.documentElement;
+
+  el.dataset.theme = safeTheme;
+  el.style.colorScheme = safeTheme;
+  el.style.background = safeTheme === "dark" ? DARK_BG : LIGHT_BG;
 
   if (persist) {
     try {
