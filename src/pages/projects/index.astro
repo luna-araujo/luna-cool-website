@@ -182,68 +182,96 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
 <script>
   // --- Carousel Logic for Project Cards (Preserved) ---
   const track = document.getElementById('track');
+  const viewport = document.querySelector('.viewport');
   const nextBtn = document.getElementById('next-btn');
   const prevBtn = document.getElementById('prev-btn');
 
   const useNativeScrollCarousel = window.matchMedia('(max-width: 640px)').matches;
+
   if (useNativeScrollCarousel) {
-    // On mobile: use native horizontal scrolling + scroll-snap (CSS).
-    // The JS carousel logic below rearranges DOM nodes and animates transforms,
-    // which conflicts with natural scrolling.
+    // On mobile: use native horizontal scrolling with smooth scroll behavior
+    if (nextBtn && prevBtn && viewport) {
+      nextBtn.addEventListener('click', () => {
+        const scrollAmount = viewport.clientWidth * 0.8; // Scroll ~80% of viewport width
+        viewport.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      });
+
+      prevBtn.addEventListener('click', () => {
+        const scrollAmount = viewport.clientWidth * 0.8;
+        viewport.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      });
+    }
   } else {
+    // Desktop: use DOM manipulation carousel
+    let isAnimating = false;
 
-  let isAnimating = false;
+    const moveNext = () => {
+      if (isAnimating || !track) return;
+      const style = window.getComputedStyle(track);
+      const gap = parseFloat(style.gap) || 0;
+      const firstChild = track.firstElementChild;
+      const itemWidth = firstChild ? firstChild.getBoundingClientRect().width : 0;
+      const moveAmount = itemWidth + gap;
 
-  const moveNext = () => {
-    if (isAnimating || !track) return;
-    const style = window.getComputedStyle(track);
-    const gap = parseFloat(style.gap) || 0;
-    const firstChild = track.firstElementChild;
-    const itemWidth = firstChild ? firstChild.getBoundingClientRect().width : 0;
-    const moveAmount = itemWidth + gap;
+      isAnimating = true;
+      track.style.transition = 'transform 0.5s ease-in-out';
+      track.style.transform = `translateX(-${moveAmount}px)`;
 
-    isAnimating = true;
-    track.style.transition = 'transform 0.5s ease-in-out';
-    track.style.transform = `translateX(-${moveAmount}px)`;
+      const transitionEnd = () => {
+        track.removeEventListener('transitionend', transitionEnd);
+        track.style.transition = 'none';
+        if (firstChild) track.appendChild(firstChild);
+        track.style.transform = 'translateX(0)';
+        setTimeout(() => { isAnimating = false; }, 10);
+      };
+      track.addEventListener('transitionend', transitionEnd);
+    };
 
-    const transitionEnd = () => {
-      track.removeEventListener('transitionend', transitionEnd);
+    const movePrev = () => {
+      if (isAnimating || !track) return;
+      const style = window.getComputedStyle(track);
+      const gap = parseFloat(style.gap) || 0;
+      const lastChild = track.lastElementChild;
+      if (!lastChild) return;
+
+      const itemWidth = lastChild.getBoundingClientRect().width;
+      const moveAmount = itemWidth + gap;
+
+      isAnimating = true;
       track.style.transition = 'none';
-      if (firstChild) track.appendChild(firstChild);
+      track.insertBefore(lastChild, track.firstElementChild);
+      track.style.transform = `translateX(-${moveAmount}px)`;
+      void track.offsetHeight;
+      track.style.transition = 'transform 0.5s ease-in-out';
       track.style.transform = 'translateX(0)';
-      setTimeout(() => { isAnimating = false; }, 10);
+
+      const transitionEnd = () => {
+        track.removeEventListener('transitionend', transitionEnd);
+        isAnimating = false;
+      };
+      track.addEventListener('transitionend', transitionEnd);
     };
-    track.addEventListener('transitionend', transitionEnd);
-  };
-
-  const movePrev = () => {
-    if (isAnimating || !track) return;
-    const style = window.getComputedStyle(track);
-    const gap = parseFloat(style.gap) || 0;
-    const lastChild = track.lastElementChild;
-    if (!lastChild) return;
-    
-    const itemWidth = lastChild.getBoundingClientRect().width;
-    const moveAmount = itemWidth + gap;
-
-    isAnimating = true;
-    track.style.transition = 'none';
-    track.insertBefore(lastChild, track.firstElementChild);
-    track.style.transform = `translateX(-${moveAmount}px)`;
-    void track.offsetHeight;
-    track.style.transition = 'transform 0.5s ease-in-out';
-    track.style.transform = 'translateX(0)';
-
-    const transitionEnd = () => {
-      track.removeEventListener('transitionend', transitionEnd);
-      isAnimating = false;
-    };
-    track.addEventListener('transitionend', transitionEnd);
-  };
 
     if (nextBtn && prevBtn) {
       nextBtn.addEventListener('click', moveNext);
       prevBtn.addEventListener('click', movePrev);
+
+      // Add keyboard arrow key support
+      window.addEventListener('keydown', (e) => {
+        // Don't trigger if user is typing in an input or modal is open
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' ||
+            document.querySelector('.project-modal[open]')) {
+          return;
+        }
+
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          moveNext();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          movePrev();
+        }
+      });
     }
   }
 
