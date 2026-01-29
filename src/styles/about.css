@@ -95,8 +95,6 @@
 .about-card__body {
   padding: 0 18px 18px 18px;
   color: var(--card-accent, var(--accent));
-  max-height: 340px;
-  overflow: hidden;
 }
 
 .about-card[data-open="false"] .about-card__body {
