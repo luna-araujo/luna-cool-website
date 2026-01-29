@@ -1,7 +1,7 @@
 ---
 import "../styles/themes.css";
 import "../styles/global.css";
-import themeToolsUrl from "../scripts/theme-tools.js?url";
+import themeToolsUrl from "../scripts/theme-tools.ts?url";
 
 const { title = "Luna Araújo", description = "Personal website" } = Astro.props;
 const basePath = import.meta.env.BASE_URL;
@@ -24,19 +24,10 @@ const isActive = (path: string) => {
     <script>
       (() => {
         const storageKey = "luna:theme";
-        const themes = new Set([
-          "light",
-          "light-rosepine",
-          "dark",
-          "dark-reference",
-          "dark-legacy",
-          "dark-gruvbox",
-          "dark-tokyonight",
-          "dark-rosepine",
-        ]);
         const saved = (() => {
           try {
-            return localStorage.getItem(storageKey);
+            const v = localStorage.getItem(storageKey);
+            return v === "light" || v === "dark" ? v : null;
           } catch {
             return null;
           }
@@ -44,14 +35,17 @@ const isActive = (path: string) => {
 
         const systemPrefersDark = (() => {
           try {
-            return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+            return window.matchMedia?.("(prefers-color-scheme: dark)").matches;
           } catch {
             return false;
           }
         })();
 
-        const theme = saved && themes.has(saved) ? saved : (systemPrefersDark ? "dark-reference" : "light");
-        document.documentElement.dataset.theme = theme;
+        const theme = saved ?? (systemPrefersDark ? "dark" : "light");
+        const root = document.documentElement;
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        root.style.background = theme === "dark" ? "#191724" : "#faf4ed";
       })();
     </script>
     <link rel="icon" href={basePath + "home-icon.svg"} type="image/svg+xml" />
