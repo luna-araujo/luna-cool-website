@@ -100,7 +100,9 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
         <!-- Left Column: Slideshow -->
         <div class="modal-media-col" id={`gallery-${item.slug}`}>
           <div class="modal-media-header">
-            <h2 class="modal-title">{item.data.title}</h2>
+            <a href={basePath + `projects/${item.slug}`} class="modal-title-link">
+              <h2 class="modal-title">{item.data.title}</h2>
+            </a>
           </div>
 
           {item.slides.length > 0 ? (

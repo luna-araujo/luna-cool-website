@@ -52,37 +52,54 @@ if (hasGallery) {
 
     <header class="project-detail__header">
       <h1 class="project-detail__title">{project.data.title}</h1>
-      <div class="project-detail__meta">
+      <div class="project-detail__meta project-detail__meta--mobile">
         {project.data.summary && <p class="project-detail__summary">{project.data.summary}</p>}
         {project.data.role && <p class="project-detail__role">{project.data.role}</p>}
         {project.data.year && <p class="project-detail__year">{project.data.year}</p>}
+        {project.data.link && (
+          <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-detail__link">
+            Visit Project <span>→</span>
+          </a>
+        )}
       </div>
     </header>
 
-    <div class="project-detail__body">
-      {project.data.image && (
-        <div class="project-detail__cover">
-          <img
-            class="project-detail__coverImage"
-            src={basePath + project.data.image.slice(1)}
-            alt={project.data.title}
-          />
+    {project.data.image && (
+      <div class="project-detail__cover">
+        <img
+          class="project-detail__coverImage"
+          src={basePath + project.data.image.slice(1)}
+          alt={project.data.title}
+        />
+        <div class="project-detail__meta project-detail__meta--desktop">
+          {project.data.summary && <p class="project-detail__summary">{project.data.summary}</p>}
+          {project.data.role && <p class="project-detail__role">{project.data.role}</p>}
+          {project.data.year && <p class="project-detail__year">{project.data.year}</p>}
           {project.data.link && (
             <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-detail__link">
               Visit Project <span>→</span>
             </a>
           )}
         </div>
-      )}
+      </div>
+    )}
 
+    <div class="project-detail__body">
       <div class="project-detail__content prose max-w-none">
         <Content />
       </div>
+    </div>
 
-      {hasGallery && galleryImages.length > 0 && (
-        <section class="project-detail__gallery">
-          <h2 class="project-detail__galleryTitle">Gallery</h2>
-          <div class="project-detail__galleryGrid">
+    {hasGallery && galleryImages.length > 0 && (
+      <section class="project-detail__gallery">
+        <h2 class="project-detail__galleryTitle">Gallery</h2>
+        <div class="project-detail__galleryWrapper">
+          <button class="project-detail__galleryBtn project-detail__galleryBtn--prev" aria-label="Previous image">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" class="icon-arrow rotate-left">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
+            </svg>
+          </button>
+          <div class="project-detail__galleryGrid" id="gallery-scroll">
             {galleryImages.map((imageSrc, index) => (
               <img
                 src={imageSrc}
@@ -93,9 +110,14 @@ if (hasGallery) {
               />
             ))}
           </div>
-        </section>
-      )}
-    </div>
+          <button class="project-detail__galleryBtn project-detail__galleryBtn--next" aria-label="Next image">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" class="icon-arrow rotate-right">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
+            </svg>
+          </button>
+        </div>
+      </section>
+    )}
 
     <div class="project-detail__footer">
       <a class="project-detail__back" href={basePath + "projects"}>
@@ -133,6 +155,38 @@ if (hasGallery) {
       const lightboxPrev = document.getElementById('lightbox-prev');
       const lightboxNext = document.getElementById('lightbox-next');
       const galleryImagesEl = document.querySelectorAll('.project-detail__galleryImage');
+
+      // Gallery scroll buttons
+      const galleryScroll = document.getElementById('gallery-scroll');
+      const galleryPrevBtn = document.querySelector('.project-detail__galleryBtn--prev');
+      const galleryNextBtn = document.querySelector('.project-detail__galleryBtn--next');
+
+      if (galleryScroll && galleryPrevBtn && galleryNextBtn) {
+        const scrollAmount = 200;
+
+        const updateGalleryButtons = () => {
+          const isScrollable = galleryScroll.scrollWidth > galleryScroll.clientWidth;
+          if (!isScrollable) {
+            galleryPrevBtn.classList.add('hidden');
+            galleryNextBtn.classList.add('hidden');
+          } else {
+            galleryPrevBtn.classList.remove('hidden');
+            galleryNextBtn.classList.remove('hidden');
+          }
+        };
+
+        galleryPrevBtn.addEventListener('click', () => {
+          galleryScroll.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        galleryNextBtn.addEventListener('click', () => {
+          galleryScroll.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+
+        // Check on load and resize
+        updateGalleryButtons();
+        window.addEventListener('resize', updateGalleryButtons);
+      }
 
       let currentImageIndex = 0;
 

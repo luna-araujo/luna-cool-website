@@ -349,6 +349,16 @@
     flex-shrink: 0;
 }
 
+.modal-title-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.modal-title-link:hover .modal-title {
+    color: var(--accent);
+}
+
 .modal-title {
     font-family: var(--font-sans);
     font-size: 2rem;
@@ -356,6 +366,7 @@
     line-height: 1.1;
     margin-bottom: 1rem;
     color: #fff;
+    transition: color 0.2s ease;
 }
 
 @media (max-width: 900px) {
