@@ -91,3 +91,45 @@ html[data-theme^="dark"] .contact-card__body,
 html[data-theme^="dark"] .contact-lead {
   color: var(--card-accent, var(--accent));
 }
+
+/* Credits footer styling */
+.credits {
+  color: var(--text);
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  border-top: 1px solid var(--border, rgba(0, 0, 0, 0.1));
+}
+
+.credits p {
+  margin: 0;
+}
+
+.credits a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+
+.credits a:hover {
+  opacity: 0.8;
+}
+
+/* Ensure contact page doesn't scroll when footer fits on screen */
+@supports (display: flex) {
+  main.container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 24px - var(--bottom-nav-height));
+  }
+
+  .contact-stage {
+    flex: 1;
+    min-height: auto;
+  }
+
+  .credits {
+    margin-top: auto;
+  }
+}
