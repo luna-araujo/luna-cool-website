@@ -85,7 +85,7 @@ body {
   bottom: 0;
   height: var(--bottom-nav-height);
   background: var(--nav-bg);
-  z-index: 1;
+  z-index: 50;
 }
 
 .bottom-nav__inner {
