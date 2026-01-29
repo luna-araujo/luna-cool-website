@@ -176,7 +176,7 @@ body {
 
 @media (max-width: 640px) {
   :root {
-    --bottom-nav-height: 84px;
+    --bottom-nav-height: 64px;
   }
 
   .bottom-nav__inner {
@@ -184,13 +184,13 @@ body {
     flex-wrap: nowrap;
     gap: 8px;
     padding-top: 0;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
   }
 
   .bottom-nav__link {
     min-width: 0;
     flex: 1 1 auto;
-    padding: 10px 14px;
+    padding: 8px 12px;
     text-transform: none;
   }
 
