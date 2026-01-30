@@ -95,7 +95,7 @@ if (hasGallery) {
         <h2 class="project-detail__galleryTitle">Gallery</h2>
         <div class="project-detail__galleryWrapper">
           <button class="project-detail__galleryBtn project-detail__galleryBtn--prev" aria-label="Previous image">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" class="icon-arrow rotate-left">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
             </svg>
           </button>
@@ -104,18 +104,23 @@ if (hasGallery) {
               <img
                 src={imageSrc}
                 alt={`${project.data.title} screenshot ${index + 1}`}
-                class="project-detail__galleryImage"
+                class={`project-detail__galleryImage ${index === 0 ? 'active' : ''}`}
                 loading="lazy"
                 data-index={index}
               />
             ))}
           </div>
           <button class="project-detail__galleryBtn project-detail__galleryBtn--next" aria-label="Next image">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" class="icon-arrow rotate-right">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"></path>
             </svg>
           </button>
         </div>
+        {galleryImages.length > 1 && (
+          <div class="project-detail__galleryCounter">
+            <span id="gallery-current">1</span> / {galleryImages.length}
+          </div>
+        )}
       </section>
     )}
 
@@ -156,36 +161,38 @@ if (hasGallery) {
       const lightboxNext = document.getElementById('lightbox-next');
       const galleryImagesEl = document.querySelectorAll('.project-detail__galleryImage');
 
-      // Gallery scroll buttons
-      const galleryScroll = document.getElementById('gallery-scroll');
+      // Gallery slideshow
       const galleryPrevBtn = document.querySelector('.project-detail__galleryBtn--prev');
       const galleryNextBtn = document.querySelector('.project-detail__galleryBtn--next');
+      const galleryCurrent = document.getElementById('gallery-current');
+      let galleryIndex = 0;
 
-      if (galleryScroll && galleryPrevBtn && galleryNextBtn) {
-        const scrollAmount = 200;
+      const updateGallerySlide = () => {
+        galleryImagesEl.forEach((img, i) => {
+          img.classList.toggle('active', i === galleryIndex);
+        });
+        if (galleryCurrent) {
+          galleryCurrent.textContent = galleryIndex + 1;
+        }
+        // Hide buttons if only one image
+        if (galleryImages.length <= 1) {
+          galleryPrevBtn?.classList.add('hidden');
+          galleryNextBtn?.classList.add('hidden');
+        }
+      };
 
-        const updateGalleryButtons = () => {
-          const isScrollable = galleryScroll.scrollWidth > galleryScroll.clientWidth;
-          if (!isScrollable) {
-            galleryPrevBtn.classList.add('hidden');
-            galleryNextBtn.classList.add('hidden');
-          } else {
-            galleryPrevBtn.classList.remove('hidden');
-            galleryNextBtn.classList.remove('hidden');
-          }
-        };
-
+      if (galleryPrevBtn && galleryNextBtn) {
         galleryPrevBtn.addEventListener('click', () => {
-          galleryScroll.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+          updateGallerySlide();
         });
 
         galleryNextBtn.addEventListener('click', () => {
-          galleryScroll.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          galleryIndex = (galleryIndex + 1) % galleryImages.length;
+          updateGallerySlide();
         });
 
-        // Check on load and resize
-        updateGalleryButtons();
-        window.addEventListener('resize', updateGalleryButtons);
+        updateGallerySlide();
       }
 
       let currentImageIndex = 0;
