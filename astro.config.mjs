@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  site: 'https://luna-cool-website.netlify.app',
+  site: 'https://luna-araujo.com',
   base: '/',
   image: {
     service: {
