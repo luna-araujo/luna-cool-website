@@ -3,14 +3,13 @@ title: "Games I love"
 accent: "accent-alt"
 x: 1090
 y: 540
-w: 300
+w: 380
 open: false
 kind: "tags"
 order: 7
 tags:
-  - "Celeste"
-  - "Hades"
-  - "Undertale"
-  - "Katamari"
+  - "Dark Souls 3"
+  - "Fallout: New Vegas"
+  - "Deadlock"
   - "Slay the Spire"
 ---

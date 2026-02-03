@@ -1,9 +1,9 @@
 ---
 title: "Soft skills"
 accent: "accent-alt"
-x: 360
-y: 520
-w: 360
+x: 120
+y: 570
+w: 420
 open: false
 kind: "tags"
 order: 4
