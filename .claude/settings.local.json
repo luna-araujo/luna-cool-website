@@ -5,7 +5,11 @@
       "WebFetch(domain:docs.astro.build)",
       "Bash(dir:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git -C /home/luna/repositories/luna-cool-website status)",
+      "Bash(git -C /home/luna/repositories/luna-cool-website diff)",
+      "Bash(git -C /home/luna/repositories/luna-cool-website log --oneline -5)",
+      "Bash(git -C /home/luna/repositories/luna-cool-website push origin main)"
     ]
   }
 }
