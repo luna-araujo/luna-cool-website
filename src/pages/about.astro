@@ -1,114 +1,24 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/about.css";
 
-type AboutCard = {
-  id: string;
-  title: string;
-  accent: "accent" | "accent-alt";
-  x: number;
-  y: number;
-  w: number;
-  open?: boolean;
-  kind: "text" | "tags";
-  text?: string[];
-  tags?: string[];
-};
+const cardsCollection = await getCollection("cards");
+const sortedCards = cardsCollection.sort((a, b) => a.data.order - b.data.order);
 
-const basePath = import.meta.env.BASE_URL;
+const cards = await Promise.all(
+  sortedCards.map(async (card) => {
+    const { Content } = await card.render();
+    return {
+      id: card.slug,
+      Content,
+      ...card.data,
+    };
+  })
+);
 
-const cssAccentFor = (accent: AboutCard["accent"]) =>
+const cssAccentFor = (accent: "accent" | "accent-alt") =>
   accent === "accent" ? "var(--accent)" : "var(--accent-alt)";
-
-const cards: AboutCard[] = [
-  {
-    id: "who",
-    title: "Who am I?",
-    accent: "accent",
-    x: 84,
-    y: 120,
-    w: 460,
-    open: true,
-    kind: "text",
-    text: [
-      "My main role is as a Game Designer, but I consider myself a generalist professional.",
-      "Since designing experiences is one of my biggest passions, I've been interested in many different activities throughout my life, such as video editing, scripting, animating, drawing, developing websites and apps…",
-      "Today I dedicate myself to creating games, but I know that each one of these activities were fundamental to my career.",
-    ],
-  },
-  {
-    id: "workwithme",
-    title: "What's like working with me",
-    accent: "accent",
-    x: 700,
-    y: 78,
-    w: 520,
-    open: false,
-    kind: "text",
-    text: [
-      "I care about clarity, fast iteration, and keeping things shippable.",
-      "I like pairing with engineers and artists early so we can find the fun quickly and polish with intention.",
-    ],
-  },
-  {
-    id: "skills",
-    title: "Skills",
-    accent: "accent-alt",
-    x: 590,
-    y: 190,
-    w: 420,
-    open: false,
-    kind: "tags",
-    tags: ["English B2-C1", "Prototyping", "Documentation", "Scripting", "Probability and Statistics"],
-  },
-  {
-    id: "softskills",
-    title: "Soft skills",
-    accent: "accent-alt",
-    x: 360,
-    y: 520,
-    w: 360,
-    open: false,
-    kind: "tags",
-    tags: ["Communication", "Collaboration", "Ownership", "Feedback", "Adaptability"],
-  },
-  {
-    id: "tools",
-    title: "Tools and softwares",
-    accent: "accent-alt",
-    x: 630,
-    y: 420,
-    w: 520,
-    open: false,
-    kind: "tags",
-    tags: ["Unity Engine", "C#", "Git", "HTML", "CSS", "JavaScript", "Node.js", "Electron"],
-  },
-  {
-    id: "experience",
-    title: "My experiences",
-    accent: "accent",
-    x: 980,
-    y: 310,
-    w: 320,
-    open: false,
-    kind: "text",
-    text: [
-      "Game jams, indie prototypes, and shipped casino/video-bingo titles.",
-      "I enjoy bridging design + implementation, especially for UI/UX and moment-to-moment feel.",
-    ],
-  },
-  {
-    id: "games",
-    title: "Games I love",
-    accent: "accent-alt",
-    x: 1090,
-    y: 540,
-    w: 300,
-    open: false,
-    kind: "tags",
-    tags: ["Celeste", "Hades", "Undertale", "Katamari", "Slay the Spire"],
-  },
-];
 ---
 <BaseLayout title="About — Luna Araújo" description="About Luna Araújo">
   <section class="about-stage" aria-label="About cards">
@@ -141,14 +51,7 @@ const cards: AboutCard[] = [
         <div class="about-card__body">
           {card.kind === "text" && (
             <div class="about-card__text">
-              {(card.text ?? []).map((p) => (
-                <p class="mb-3">{p}</p>
-              ))}
-              {card.id === "who" && (
-                <p class="about-card__text">
-                  See my work in <a class="link" href={basePath + "projects"}>projects</a>.
-                </p>
-              )}
+              <card.Content />
             </div>
           )}
 
@@ -315,6 +218,55 @@ const cards: AboutCard[] = [
 
       window.addEventListener("resize", () => {
         for (const card of cards) clampCardIntoStage(card);
+      });
+
+      // Debug mode: Shift+D to toggle position overlay
+      let debugMode = false;
+
+      const updateDebugOverlay = (card: HTMLElement) => {
+        let overlay = card.querySelector<HTMLElement>(".about-card__debug");
+        if (debugMode) {
+          const x = Math.round(getVarPx(card, "--x"));
+          const y = Math.round(getVarPx(card, "--y"));
+          const w = Math.round(getVarPx(card, "--w"));
+          if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.className = "about-card__debug";
+            overlay.style.cssText = `
+              position: absolute; top: 4px; right: 40px;
+              font-size: 10px; font-family: monospace;
+              background: rgba(0,0,0,0.7); color: #0f0;
+              padding: 2px 6px; border-radius: 3px;
+              pointer-events: none; z-index: 100;
+            `;
+            card.querySelector(".about-card__header")?.appendChild(overlay);
+          }
+          overlay.textContent = `x:${x} y:${y} w:${w}`;
+        } else if (overlay) {
+          overlay.remove();
+        }
+      };
+
+      const updateAllDebugOverlays = () => {
+        for (const card of cards) updateDebugOverlay(card);
+      };
+
+      // Update overlays during drag
+      for (const card of cards) {
+        const dragBtn = card.querySelector<HTMLButtonElement>(".about-card__drag");
+        if (dragBtn) {
+          dragBtn.addEventListener("pointermove", () => {
+            if (debugMode) updateDebugOverlay(card);
+          });
+        }
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.shiftKey && e.key.toLowerCase() === "d") {
+          e.preventDefault();
+          debugMode = !debugMode;
+          updateAllDebugOverlays();
+        }
       });
     }
   </script>

@@ -25,4 +25,19 @@ const projects = defineCollection({
   })
 });
 
-export const collections = { blog, projects }; 
+const cards = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    accent: z.enum(["accent", "accent-alt"]),
+    x: z.number(),
+    y: z.number(),
+    w: z.number(),
+    open: z.boolean().default(false),
+    kind: z.enum(["text", "tags"]),
+    order: z.number(),
+    tags: z.array(z.string()).optional()
+  })
+});
+
+export const collections = { blog, projects, cards }; 
