@@ -1,0 +1,209 @@
+.game-download-stage {
+  min-height: calc(100dvh - 24px - var(--bottom-nav-height));
+  padding: clamp(18px, 4vw, 42px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.game-download-header {
+  max-width: 760px;
+}
+
+.game-download-title {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.game-download-lead {
+  margin-top: 10px;
+  max-width: 56ch;
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--text) 82%, transparent);
+}
+
+.release-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.release-chip {
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  min-width: 170px;
+  padding: 10px 12px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.release-chip__label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent-alt);
+}
+
+.release-chip__value {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.release-overview__link {
+  margin-left: auto;
+  align-self: center;
+  border: 2px solid var(--accent-alt);
+  color: var(--accent-alt);
+  text-decoration: none;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.release-overview__link:hover {
+  background: var(--accent-alt);
+  color: var(--bg);
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.download-card {
+  --download-accent: var(--accent);
+  border: 2px solid var(--download-accent);
+  background: var(--bg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 190px;
+}
+
+.download-card[data-platform="linux"] {
+  --download-accent: var(--accent-alt);
+}
+
+.download-card[data-platform="macos"] {
+  --download-accent: color-mix(in oklab, var(--accent) 60%, var(--accent-alt));
+}
+
+.download-card[data-platform="other"] {
+  --download-accent: var(--text);
+}
+
+.download-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.download-card__platform {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--download-accent);
+}
+
+.download-card__size {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--text) 70%, transparent);
+}
+
+.download-card__name {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  flex-grow: 1;
+}
+
+.download-card__button {
+  border: 2px solid var(--download-accent);
+  background: transparent;
+  color: var(--download-accent);
+  text-decoration: none;
+  text-align: center;
+  padding: 9px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.download-card__button:hover {
+  background: var(--download-accent);
+  color: var(--bg);
+}
+
+.download-fallback {
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  padding: 16px;
+  max-width: 720px;
+}
+
+.download-fallback h2 {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.download-fallback p {
+  margin-top: 8px;
+  color: color-mix(in oklab, var(--text) 78%, transparent);
+}
+
+.download-fallback a {
+  display: inline-block;
+  margin-top: 12px;
+  border: 2px solid var(--accent-alt);
+  color: var(--accent-alt);
+  text-decoration: none;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.download-fallback a:hover {
+  background: var(--accent-alt);
+  color: var(--bg);
+}
+
+.game-download-footer {
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.game-download-footer a {
+  color: var(--accent-alt);
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .release-overview__link {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .release-chip {
+    flex: 1 1 100%;
+  }
+}

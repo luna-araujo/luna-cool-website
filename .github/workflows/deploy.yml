@@ -19,6 +19,10 @@ jobs:
       
       - name: Install, build, and upload your site
         uses: withastro/action@v2
+        env:
+          GAME_RELEASES_OWNER: luna-araujo
+          GAME_RELEASES_REPO: happy_lobby
+          GAME_RELEASES_TOKEN: ${{ secrets.GAME_RELEASES_TOKEN }}
 
   deploy:
     needs: build

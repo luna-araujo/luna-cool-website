@@ -103,6 +103,14 @@ body {
   margin: 0;
 }
 
+.bottom-nav--minimal .bottom-nav__inner {
+  gap: 10px;
+}
+
+.bottom-nav--minimal .bottom-nav__link {
+  min-width: 156px;
+}
+
 @media (min-width: 768px) {
   .bottom-nav__inner {
     padding-left: 24px;

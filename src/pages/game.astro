@@ -1,0 +1,103 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  GAME_RELEASES_URL,
+  fetchLatestGameRelease,
+  formatBytes,
+  type ReleasePlatform
+} from "../lib/github-releases";
+import "../styles/game-download.css";
+
+const latestRelease = await fetchLatestGameRelease();
+
+const platformLabels: Record<ReleasePlatform, string> = {
+  windows: "Windows",
+  linux: "Linux",
+  macos: "macOS",
+  other: "Other"
+};
+
+const publishedDate = latestRelease.ok && latestRelease.publishedAt
+  ? new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date(latestRelease.publishedAt))
+  : null;
+---
+
+<BaseLayout
+  title="Game Downloads — Luna Araújo"
+  description="Download the latest Happy Lobby release builds."
+  navProfile="minimal"
+>
+  <section class="game-download-stage" aria-label="Game downloads">
+    <header class="game-download-header">
+      <h1 class="game-download-title">Download Happy Lobby</h1>
+      <p class="game-download-lead">
+        Grab the latest release builds directly from GitHub.
+      </p>
+    </header>
+
+    {latestRelease.ok ? (
+      <>
+        <section class="release-overview" aria-label="Release overview">
+          <div class="release-chip">
+            <span class="release-chip__label">Latest</span>
+            <strong class="release-chip__value">{latestRelease.tagName}</strong>
+          </div>
+          <div class="release-chip">
+            <span class="release-chip__label">Published</span>
+            <strong class="release-chip__value">{publishedDate ?? "Unknown date"}</strong>
+          </div>
+          <a
+            class="release-overview__link"
+            href={latestRelease.releaseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View full release notes
+          </a>
+        </section>
+
+        {latestRelease.assets.length > 0 ? (
+          <section class="download-grid" aria-label="Download assets">
+            {latestRelease.assets.map((asset) => (
+              <article class="download-card" data-platform={asset.platform}>
+                <div class="download-card__top">
+                  <span class="download-card__platform">{platformLabels[asset.platform]}</span>
+                  <span class="download-card__size">{formatBytes(asset.sizeBytes)}</span>
+                </div>
+                <h2 class="download-card__name">{asset.name}</h2>
+                <a
+                  href={asset.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="download-card__button"
+                >
+                  Download
+                </a>
+              </article>
+            ))}
+          </section>
+        ) : (
+          <section class="download-fallback" aria-label="No zip assets">
+            <h2>No ZIP build artifacts were found in the latest release.</h2>
+            <p>Open the release page to check all available assets.</p>
+            <a href={latestRelease.releaseUrl} target="_blank" rel="noopener noreferrer">
+              Open latest release
+            </a>
+          </section>
+        )}
+      </>
+    ) : (
+      <section class="download-fallback" aria-label="Release lookup failed">
+        <h2>Latest release could not be loaded right now.</h2>
+        <p>{latestRelease.message}</p>
+        <a href={latestRelease.releaseUrl} target="_blank" rel="noopener noreferrer">
+          Browse all releases
+        </a>
+      </section>
+    )}
+
+    <footer class="game-download-footer">
+      <a href={GAME_RELEASES_URL} target="_blank" rel="noopener noreferrer">happy_lobby releases</a>
+    </footer>
+  </section>
+</BaseLayout>
