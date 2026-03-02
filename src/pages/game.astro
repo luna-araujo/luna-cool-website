@@ -8,6 +8,9 @@ import {
 } from "../lib/github-releases";
 import "../styles/game-download.css";
 
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
+
 const latestRelease = await fetchLatestGameRelease();
 
 const platformLabels: Record<ReleasePlatform, string> = {
