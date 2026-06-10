@@ -2,7 +2,7 @@
 title: "Zen Tiger Bingo"
 summary: "Video Bingo"
 role: "Developer"
-year: "2026"
+year: "2026-01"
 image: "/images/projects/zen-tiger-bingo/logo.png"
 link: "https://staging.the-rgs.com/open_fun_game/344"
 ---

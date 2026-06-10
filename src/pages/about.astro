@@ -181,6 +181,12 @@ const cssAccentFor = (accent: "accent" | "accent-alt") =>
           drag.addEventListener("pointermove", (e: PointerEvent) => {
             if (!dragging) return;
 
+            // Keep cursor block following during drag (pointer capture suppresses mousemove on window)
+            window.dispatchEvent(new MouseEvent("mousemove", {
+              clientX: e.clientX,
+              clientY: e.clientY,
+            }));
+
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
             let nextX = baseX + dx;

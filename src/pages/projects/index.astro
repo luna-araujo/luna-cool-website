@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const basePath = import.meta.env.BASE_URL;
-const projectsRaw = (await getCollection("projects")).sort((a, b) => parseInt(b.data.year || '0') - parseInt(a.data.year || '0'));
+const projectsRaw = (await getCollection("projects")).sort((a, b) => (b.data.year || '').localeCompare(a.data.year || ''));
 
 const projects = await Promise.all(projectsRaw.map(async (project) => {
   const { Content } = await project.render();
@@ -74,7 +74,7 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
             <h3>{item.data.title}</h3>
             <p>{item.data.summary}</p>
             <div class="project-meta">
-              <span>{item.data.year}</span>
+              <span>{item.data.year?.split('-')[0]}</span>
             </div>
           </button>
         ))}
@@ -138,7 +138,7 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
 
           {item.data.year ? (
             <div class="modal-media-footer">
-              <span class="modal-media-date">{item.data.year}</span>
+              <span class="modal-media-date">{item.data.year?.split('-')[0]}</span>
             </div>
           ) : null}
         </div>

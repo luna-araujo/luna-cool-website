@@ -55,7 +55,7 @@ if (hasGallery) {
       <div class="project-detail__meta project-detail__meta--mobile">
         {project.data.summary && <p class="project-detail__summary">{project.data.summary}</p>}
         {project.data.role && <p class="project-detail__role">{project.data.role}</p>}
-        {project.data.year && <p class="project-detail__year">{project.data.year}</p>}
+        {project.data.year && <p class="project-detail__year">{project.data.year?.split('-')[0]}</p>}
         {project.data.link && (
           <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-detail__link">
             Visit Project <span>→</span>
@@ -74,7 +74,7 @@ if (hasGallery) {
         <div class="project-detail__meta project-detail__meta--desktop">
           {project.data.summary && <p class="project-detail__summary">{project.data.summary}</p>}
           {project.data.role && <p class="project-detail__role">{project.data.role}</p>}
-          {project.data.year && <p class="project-detail__year">{project.data.year}</p>}
+          {project.data.year && <p class="project-detail__year">{project.data.year?.split('-')[0]}</p>}
           {project.data.link && (
             <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="project-detail__link">
               Visit Project <span>→</span>
