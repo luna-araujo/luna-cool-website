@@ -1,6 +1,7 @@
 ---
 title: "Sugar Bingo"
 summary: "Video Bingo"
+category: "casino"
 role: "Developer"
 year: "2025"
 image: "/images/projects/sugar-bingo/logo.png"

@@ -1,6 +1,7 @@
 ---
 title: "Blackjack Joker"
 summary: "Table Game"
+category: "casino"
 role: "Developer"
 year: "2026-03"
 image: "/images/projects/blackjack-joker/logo.png"

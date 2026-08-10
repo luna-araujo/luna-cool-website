@@ -3,6 +3,7 @@ title: Quasar
 year: "2021"
 image: /images/projects/quasar/logo.png
 summary: Bullet Hell
+category: "steam"
 role: Developer / Game Designer
 link: https://store.steampowered.com/app/1470350/Quasar/
 ---

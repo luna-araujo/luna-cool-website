@@ -1,6 +1,7 @@
 ---
 title: "Froggo the Frog"
 summary: "3D Platformer Game"
+category: "game-jam"
 role: "Project Lead / Developer"
 year: "2020"
 image: "/images/projects/froggo-the-frog/logo.png"

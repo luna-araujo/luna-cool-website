@@ -1,6 +1,7 @@
 ---
 title: "Cluster Cup"
 summary: "Slot"
+category: "casino"
 role: "Developer"
 year: "2026-04"
 image: "/images/projects/cluster-cup/logo.png"

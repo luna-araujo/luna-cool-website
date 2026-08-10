@@ -1,6 +1,7 @@
 ---
 title: "Pablo o Pombo"
 summary: "Adventure Game"
+category: "game-jam"
 role: "Project Lead / Developer"
 year: "2023"
 image: "/images/projects/pablo-o-pombo/logo.png"

@@ -1,6 +1,7 @@
 ---
 title: "Golden Boom"
 summary: "Slot"
+category: "casino"
 role: "Developer"
 year: "2026-06"
 image: "/images/projects/golden-boom/logo.png"

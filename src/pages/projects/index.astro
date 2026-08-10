@@ -46,48 +46,74 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       slides: allImages
   };
 }));
+
+// Group projects into vertical category sections.
+const CATEGORIES = [
+  { id: "casino", label: "Casino" },
+  { id: "steam", label: "Steam" },
+  { id: "game-jam", label: "Game Jams" },
+];
+
+const categories = CATEGORIES
+  .map((cat) => ({
+    ...cat,
+    projects: projects.filter((p) => p.data.category === cat.id),
+  }))
+  .filter((cat) => cat.projects.length > 0);
+
+// Projects without a recognized category still get shown under "Other".
+const categorized = new Set(CATEGORIES.map((c) => c.id));
+const uncategorized = projects.filter((p) => !categorized.has(p.data.category as any));
+if (uncategorized.length > 0) {
+  categories.push({ id: "other", label: "Other", projects: uncategorized });
+}
 ---
 
 <BaseLayout title="Projects — Luna Araújo" description="Portfolio projects">
-<div class="page-container">
-  <div class="carousel-wrapper">
-    <!-- Previous Button -->
-    <button id="prev-btn" class="nav-btn" aria-label="Previous project">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-arrow rotate-left">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
-      </svg>
-    </button>
+<div class="page-container projects-page">
+  {categories.map((cat) => (
+    <section class="category-section" data-category={cat.id}>
+      <h2 class="category-title">{cat.label}</h2>
+      <div class="carousel-wrapper">
+        <!-- Previous Button -->
+        <button type="button" class="nav-btn prev-btn" aria-label="Previous project">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-arrow rotate-left">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
+          </svg>
+        </button>
 
-    <!-- Carousel Viewport -->
-    <div class="viewport">
-      <div class="track" id="track">
-        {projects.map((item) => (
-          <button
-            type="button"
-            class="project-card carousel-item text-left cursor-pointer"
-            data-target={`#modal-${item.slug}`}
-            data-href={basePath + `projects/${item.slug}`}
-          >
-            {item.data.image && (
-              <img src={basePath + item.data.image.slice(1)} alt={item.data.title} />
-            )}
-            <h3>{item.data.title}</h3>
-            <p>{item.data.summary}</p>
-            <div class="project-meta">
-              <span>{item.data.year?.split('-')[0]}</span>
-            </div>
-          </button>
-        ))}
+        <!-- Carousel Viewport -->
+        <div class="viewport">
+          <div class="track">
+            {cat.projects.map((item) => (
+              <button
+                type="button"
+                class="project-card carousel-item text-left cursor-pointer"
+                data-target={`#modal-${item.slug}`}
+                data-href={basePath + `projects/${item.slug}`}
+              >
+                {item.data.image && (
+                  <img src={basePath + item.data.image.slice(1)} alt={item.data.title} />
+                )}
+                <h3>{item.data.title}</h3>
+                <p>{item.data.summary}</p>
+                <div class="project-meta">
+                  <span>{item.data.year?.split('-')[0]}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Next Button -->
+        <button type="button" class="nav-btn next-btn" aria-label="Next project">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-arrow rotate-right">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
+          </svg>
+        </button>
       </div>
-    </div>
-
-    <!-- Next Button -->
-    <button id="next-btn" class="nav-btn" aria-label="Next project">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-arrow rotate-right">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
-      </svg>
-    </button>
-  </div>
+    </section>
+  ))}
 </div>
 
 <!-- Project Modals -->
@@ -183,33 +209,41 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
 </BaseLayout>
 
 <script>
-  // --- Carousel Logic for Project Cards (Preserved) ---
-  const track = document.getElementById('track');
-  const viewport = document.querySelector('.viewport');
-  const nextBtn = document.getElementById('next-btn');
-  const prevBtn = document.getElementById('prev-btn');
-
+  // --- Carousel Logic for Project Cards (per category section) ---
   const useNativeScrollCarousel = window.matchMedia('(max-width: 640px)').matches;
 
-  if (useNativeScrollCarousel) {
-    // On mobile: use native horizontal scrolling with smooth scroll behavior
-    if (nextBtn && prevBtn && viewport) {
-      nextBtn.addEventListener('click', () => {
-        const scrollAmount = viewport.clientWidth * 0.8; // Scroll ~80% of viewport width
-        viewport.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      });
+  const setupCarousel = (wrapper) => {
+    const track = wrapper.querySelector('.track');
+    const viewport = wrapper.querySelector('.viewport');
+    const nextBtn = wrapper.querySelector('.next-btn');
+    const prevBtn = wrapper.querySelector('.prev-btn');
+    if (!track || !viewport || !nextBtn || !prevBtn) return;
 
-      prevBtn.addEventListener('click', () => {
-        const scrollAmount = viewport.clientWidth * 0.8;
-        viewport.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    // Hide nav buttons when everything already fits (nothing to scroll to).
+    const updateNavVisibility = () => {
+      const overflows = track.scrollWidth - viewport.clientWidth > 1;
+      wrapper.classList.toggle('no-nav', !overflows);
+    };
+    updateNavVisibility();
+    window.addEventListener('resize', updateNavVisibility);
+
+    if (useNativeScrollCarousel) {
+      // On mobile: use native horizontal scrolling with smooth scroll behavior
+      nextBtn.addEventListener('click', () => {
+        viewport.scrollBy({ left: viewport.clientWidth * 0.8, behavior: 'smooth' });
       });
+      prevBtn.addEventListener('click', () => {
+        viewport.scrollBy({ left: -viewport.clientWidth * 0.8, behavior: 'smooth' });
+      });
+      return;
     }
-  } else {
+
     // Desktop: use DOM manipulation carousel
     let isAnimating = false;
 
     const moveNext = () => {
-      if (isAnimating || !track) return;
+      if (isAnimating) return;
+      if (track.scrollWidth - viewport.clientWidth <= 1) return; // fits, nothing to move
       const style = window.getComputedStyle(track);
       const gap = parseFloat(style.gap) || 0;
       const firstChild = track.firstElementChild;
@@ -231,7 +265,8 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
     };
 
     const movePrev = () => {
-      if (isAnimating || !track) return;
+      if (isAnimating) return;
+      if (track.scrollWidth - viewport.clientWidth <= 1) return;
       const style = window.getComputedStyle(track);
       const gap = parseFloat(style.gap) || 0;
       const lastChild = track.lastElementChild;
@@ -255,28 +290,11 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       track.addEventListener('transitionend', transitionEnd);
     };
 
-    if (nextBtn && prevBtn) {
-      nextBtn.addEventListener('click', moveNext);
-      prevBtn.addEventListener('click', movePrev);
+    nextBtn.addEventListener('click', moveNext);
+    prevBtn.addEventListener('click', movePrev);
+  };
 
-      // Add keyboard arrow key support
-      window.addEventListener('keydown', (e) => {
-        // Don't trigger if user is typing in an input or modal is open
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' ||
-            document.querySelector('.project-modal[open]')) {
-          return;
-        }
-
-        if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          moveNext();
-        } else if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          movePrev();
-        }
-      });
-    }
-  }
+  document.querySelectorAll('.carousel-wrapper').forEach(setupCarousel);
 
   // --- Modal Logic ---
   const cards = document.querySelectorAll('.project-card');

@@ -1,6 +1,7 @@
 ---
 title: "Zen Tiger Bingo"
 summary: "Video Bingo"
+category: "casino"
 role: "Developer"
 year: "2026-01"
 image: "/images/projects/zen-tiger-bingo/logo.png"

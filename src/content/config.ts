@@ -21,7 +21,8 @@ const projects = defineCollection({
     role: z.string().optional(),
     year: z.string().optional(),
     image: z.string().optional(),
-    link: z.string().optional()
+    link: z.string().optional(),
+    category: z.enum(["game-jam", "steam", "casino"]).optional()
   })
 });
 
