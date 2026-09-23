@@ -5,7 +5,7 @@ Personal site (Astro 4 + Tailwind CSS, no framework components). Content via Ast
 ## Dev commands
 
 ```bash
-npm run dev      # http://localhost:3000
+npm run dev      # http://localhost:4321
 npm run build    # outputs dist/
 npm run preview  # preview built site
 ```
