@@ -5,6 +5,7 @@ import "../../styles/project-card.css";
 import "../../styles/projects-view.css";
 import fs from "node:fs";
 import path from "node:path";
+import { getStudioGames } from "../../lib/lucky-luna-games";
 
 const basePath = import.meta.env.BASE_URL;
 const projectsRaw = (await getCollection("projects")).sort((a, b) => (b.data.year || '').localeCompare(a.data.year || ''));
@@ -43,12 +44,28 @@ const projects = await Promise.all(projectsRaw.map(async (project) => {
       slug: project.slug,
       data: project.data,
       Content,
-      slides: allImages
+      cover: project.data.image ? basePath + project.data.image.slice(1) : undefined,
+      href: basePath + `projects/${project.slug}`,
+      slides: allImages,
+      studio: undefined
   };
 }));
 
+// Lucky Luna Studios games come from the studio site's feed, not the content collection.
+const studioGames = (await getStudioGames()).map((game) => ({
+  slug: game.slug,
+  data: { title: game.name, summary: game.category, link: game.demo ?? game.page, category: "lucky-luna" },
+  Content: undefined,
+  cover: game.art,
+  href: game.demo ?? game.page,
+  slides: [game.art, ...game.shots].filter((src): src is string => !!src),
+  studio: game
+}));
+projects.unshift(...studioGames);
+
 // Group projects into vertical category sections.
 const CATEGORIES = [
+  { id: "lucky-luna", label: "Lucky Luna Studios" },
   { id: "casino", label: "Casino" },
   { id: "steam", label: "Steam" },
   { id: "game-jam", label: "Game Jams" },
@@ -90,15 +107,21 @@ if (uncategorized.length > 0) {
                 type="button"
                 class="project-card carousel-item text-left cursor-pointer"
                 data-target={`#modal-${item.slug}`}
-                data-href={basePath + `projects/${item.slug}`}
+                data-href={item.href}
               >
-                {item.data.image && (
-                  <img src={basePath + item.data.image.slice(1)} alt={item.data.title} />
+                {item.cover && (
+                  <img src={item.cover} alt={item.data.title} />
                 )}
                 <h3>{item.data.title}</h3>
                 <p>{item.data.summary}</p>
                 <div class="project-meta">
-                  <span>{item.data.year?.split('-')[0]}</span>
+                  {item.studio ? (
+                    <span class={`status-tag status-${item.studio.status}`}>
+                      {item.studio.status === "live" ? "Out now" : "In development"}
+                    </span>
+                  ) : (
+                    <span>{item.data.year?.split('-')[0]}</span>
+                  )}
                 </div>
               </button>
             ))}
@@ -126,7 +149,7 @@ if (uncategorized.length > 0) {
         <!-- Left Column: Slideshow -->
         <div class="modal-media-col" id={`gallery-${item.slug}`}>
           <div class="modal-media-header">
-            <a href={basePath + `projects/${item.slug}`} class="modal-title-link">
+            <a href={item.href} class="modal-title-link" {...(item.studio ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
               <h2 class="modal-title">{item.data.title}</h2>
             </a>
           </div>
@@ -176,15 +199,35 @@ if (uncategorized.length > 0) {
               <span class="meta-tag">{item.data.role.toUpperCase()}</span>
             </div>
           )}
+          {item.studio && (
+            <div class="modal-meta-row">
+              <span class="meta-tag">LUCKY LUNA STUDIOS</span>
+              <span class={`status-tag status-${item.studio.status}`}>
+                {item.studio.status === "live" ? "Out now" : "In development"}
+              </span>
+            </div>
+          )}
           
           <div class="prose prose-invert max-w-none modal-description">
-            <item.Content />
+            {item.Content ? <item.Content /> : <p>{item.studio?.text}</p>}
           </div>
+
+          {item.studio && item.studio.stats.length > 0 && (
+            <dl class="studio-stats">
+              {item.studio.stats.map((stat) => (
+                <div class="studio-stat">
+                  <dt>{stat.label}</dt>
+                  <dd>{stat.value}</dd>
+                  {stat.note && <dd class="studio-stat-note">{stat.note}</dd>}
+                </div>
+              ))}
+            </dl>
+          )}
 
           <div class="modal-footer">
              {item.data.link && (
                <a href={item.data.link} target="_blank" rel="noopener noreferrer" class="play-link">
-                 Visit Project <span class="arrow">→</span>
+                 {item.studio?.demo ? "Play Demo" : "Visit Project"} <span class="arrow">→</span>
                </a>
              )}
           </div>

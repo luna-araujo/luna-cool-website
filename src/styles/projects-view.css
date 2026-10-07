@@ -471,6 +471,29 @@
 .modal-description strong { color: #fff; }
 .modal-description h3, .modal-description h4 { color: #fff; margin-top: 1.5em; }
 
+.studio-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1.5rem;
+    margin: 1.5rem 0 0;
+    font-family: var(--font-mono);
+}
+.studio-stat dt {
+    color: #888;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.studio-stat dd {
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+}
+.studio-stat dd.studio-stat-note {
+    color: #888;
+    font-size: 0.7rem;
+}
+
 .modal-footer {
     margin-top: 2rem;
     padding-top: 1rem;
